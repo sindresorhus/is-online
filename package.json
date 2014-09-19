@@ -1,0 +1,49 @@
+{
+  "name": "is-online",
+  "version": "0.0.0",
+  "description": "Check if you're online",
+  "license": "MIT",
+  "repository": "sindresorhus/is-online",
+  "author": {
+    "name": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "http://sindresorhus.com"
+  },
+  "bin": {
+    "is-online": "cli.js"
+  },
+  "browser": "browser.js",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "files": [
+    "index.js",
+    "cli.js",
+    "browser.js"
+  ],
+  "keywords": [
+    "cli-app",
+    "cli",
+    "bin",
+    "browser",
+    "online",
+    "offline",
+    "is-online",
+    "network",
+    "connected",
+    "connectivity",
+    "internet",
+    "is",
+    "has",
+    "detect"
+  ],
+  "dependencies": {
+    "log-symbols": "^1.0.0"
+  },
+  "devDependencies": {
+    "ava": "0.0.4"
+  }
+}
