@@ -28,15 +28,17 @@ isOnline(err, online) {
 
 ## API
 
-### isOnline([domain], callback)
+### isOnline([domains], callback)
 
-#### domain
+#### domains
 
 *Optional*  
-Type: `string`  
-Default `'google.com'` *(recommend not to change this)*
+Type: `array`  
+Default `['google.com', 'opendns.com', 'baidu.com']` *(recommend not to change this)*
 
-When used in the browser, make sure the domain you choose has a `favicon.ico` in the root.
+The domains will be checked concurrently and is multiple for redunancy.
+
+When used in the browser, make sure the domains you choose has a `favicon.ico` in the root.
 
 #### callback(error, online)
 

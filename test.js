@@ -9,8 +9,8 @@ test('isOnline()', function (t) {
 	});
 });
 
-test('custom domain', function (t) {
-	isOnline('github.com', function (err, online) {
+test('custom domains', function (t) {
+	isOnline(['google.com'], function (err, online) {
 		t.assert(online);
 		t.end();
 	});
