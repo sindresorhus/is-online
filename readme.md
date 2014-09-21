@@ -1,6 +1,6 @@
 # is-online [![Build Status](https://travis-ci.org/sindresorhus/is-online.svg?branch=master)](https://travis-ci.org/sindresorhus/is-online)
 
-> Check if you're online
+> Check if the internet connection is up
 
 Works in Node.js, CLI and the browser *(with [browserify](http://browserify.org))*.
 
@@ -34,7 +34,7 @@ isOnline(err, online) {
 
 *Optional*  
 Type: `array`  
-Default `['google.com', 'opendns.com', 'baidu.com']` *(recommend not to change this)*
+Default: `['google.com', 'opendns.com', 'baidu.com']` *(recommend not to change this)*
 
 The domains will be checked concurrently and is multiple for redunancy.
 
