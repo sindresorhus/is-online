@@ -36,7 +36,7 @@ isOnline(err, online) {
 Type: `array`  
 Default: `['google.com', 'opendns.com', 'baidu.com']` *(recommend not to change this)*
 
-The domains will be checked concurrently and is multiple for redunancy.
+The domains will be checked concurrently and is multiple for redundancy.
 
 When used in the browser, make sure the domains you choose has a `favicon.ico` in the root.
 
