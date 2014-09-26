@@ -3,25 +3,9 @@ var dns = require('native-dns');
 var net = require('net');
 var eachAsync = require('each-async');
 var onetime = require('onetime');
+var roots = require('root-hints')('A');
 
 var timeout = 1000;
-
-// root hints from http://www.internic.net/domain/named.root
-var roots = [
-	'128.63.2.53',
-	'192.112.36.4',
-	'192.203.230.10',
-	'192.228.79.201',
-	'192.33.4.12',
-	'192.36.148.17',
-	'192.5.5.241',
-	'192.58.128.30',
-	'193.0.14.129',
-	'198.41.0.4',
-	'199.7.83.42',
-	'199.7.91.13',
-	'202.12.27.33'
-];
 
 module.exports = function (domains, cb) {
 	if (typeof domains === 'function') {
