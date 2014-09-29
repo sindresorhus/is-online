@@ -43,7 +43,9 @@
   "dependencies": {
     "each-async": "^1.1.0",
     "log-symbols": "^1.0.0",
-    "onetime": "^1.0.0"
+    "native-dns": "^0.6.1",
+    "onetime": "^1.0.0",
+    "root-hints": "^0.1.0"
   },
   "devDependencies": {
     "ava": "0.0.4"
