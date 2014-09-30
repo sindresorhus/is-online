@@ -15,7 +15,7 @@ module.exports = function (cb) {
 		var img = new Image();
 
 		img.onload = function () {
-			cb(null, true);
+			cb(true);
 			next(new Error); // skip to end
 		};
 
@@ -25,6 +25,6 @@ module.exports = function (cb) {
 
 		img.src = '//' + domain + '/favicon.ico?' + Date.now();
 	}, function () {
-		cb(null, false);
+		cb(false);
 	});
 };

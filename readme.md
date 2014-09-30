@@ -26,7 +26,7 @@ isOnline(err, online) {
 ```
 
 
-## API
+## Node API
 
 ### isOnline(callback)
 
@@ -36,6 +36,16 @@ isOnline(err, online) {
 Type: `function`
 
 `error` is there only by Node.js convention and is always `null`.
+
+
+## Browser API
+
+### isOnline(callback)
+
+#### callback(online)
+
+*Required*  
+Type: `function`
 
 
 ## CLI
