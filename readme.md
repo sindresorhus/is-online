@@ -28,17 +28,7 @@ isOnline(err, online) {
 
 ## API
 
-### isOnline([domains], callback)
-
-#### domains
-
-*Optional*  
-Type: `array`  
-Default: `['google.com', 'opendns.com', 'baidu.com']` *(recommend not to change this)*
-
-The domains will be checked concurrently for a connection on port 80. The checks only runs when a initialy query to the root dns servers returns indecisive results.
-
-When used in the browser, make sure the domains you choose has a `favicon.ico` in the root.
+### isOnline(callback)
 
 #### callback(error, online)
 

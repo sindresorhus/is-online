@@ -2,19 +2,12 @@
 var eachAsync = require('each-async');
 var onetime = require('onetime');
 
-module.exports = function (domains, cb) {
-	if (typeof domains === 'function') {
-		cb = domains;
-		domains = [
-			'google.com',
-			'opendns.com',
-			'baidu.com'
-		];
-	}
-
-	if (!Array.isArray(domains)) {
-		throw new TypeError('Expected `domains` to be an array');
-	}
+module.exports = function (cb) {
+	var domains = [
+		'google.com',
+		'opendns.com',
+		'baidu.com'
+	];
 
 	cb = onetime(cb);
 
