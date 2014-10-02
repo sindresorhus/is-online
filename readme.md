@@ -64,6 +64,8 @@ $ is-online --help
     ✔︎ Online
 ```
 
+## Contributors
+* [silverwind](https://github.com/silverwind)
 
 ## License
 

@@ -9,6 +9,9 @@
     "email": "sindresorhus@gmail.com",
     "url": "http://sindresorhus.com"
   },
+  "contributors": [
+    "silverwind <me@silverwind.io> (https://github.com/silverwind)"
+  ],
   "bin": {
     "is-online": "cli.js"
   },
