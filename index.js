@@ -16,9 +16,11 @@ var domains = [
 module.exports = function (cb) {
 	cb = onetime(cb);
 
-	// pick a random root server to query
+	// Pick a random root server to query
 	var server = roots[Math.floor(Math.random() * roots.length)];
 
+	// Set up a DNS request that requests the authoritative information for
+	// the 'com' zone
 	var req = dns.Request({
 		question: dns.Question({
 			name: 'com',
@@ -43,7 +45,7 @@ module.exports = function (cb) {
 		} else {
 			// Either DNS intercepting is in place or the response in mangled,
 			// try connecting to our domains on port 80, and if one handshake
-			// succeeds, we're definately online.
+			// succeeds, we're definately online
 			eachAsync(domains, function (domain, i, next) {
 				var socket = new net.Socket();
 				socket.setTimeout(timeout);
@@ -61,5 +63,6 @@ module.exports = function (cb) {
 			});
 		}
 	});
+
 	req.send();
 };
