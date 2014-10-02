@@ -4,15 +4,16 @@ var net = require('net');
 var eachAsync = require('each-async');
 var onetime = require('onetime');
 var roots = require('root-hints')('A');
+
 var timeout = 1000;
+var domains = [
+	'www.google.com',
+	'www.cloudflare.com',
+	'www.baidu.com',
+	'www.yandex.ru'
+];
 
 module.exports = function (cb) {
-	var domains = [
-		'google.com',
-		'opendns.com',
-		'baidu.com'
-	]
-
 	cb = onetime(cb);
 
 	// pick a random root server to query

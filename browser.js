@@ -2,13 +2,14 @@
 var eachAsync = require('each-async');
 var onetime = require('onetime');
 
-module.exports = function (cb) {
-	var domains = [
-		'google.com',
-		'opendns.com',
-		'baidu.com'
-	];
+var domains = [
+	'www.google.com',
+	'www.cloudflare.com',
+	'www.baidu.com',
+	'www.yandex.ru'
+];
 
+module.exports = function (cb) {
 	cb = onetime(cb);
 
 	eachAsync(domains, function (domain, i, next) {
