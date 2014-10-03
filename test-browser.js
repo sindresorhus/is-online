@@ -2,6 +2,6 @@
 // $ browserify test-browser.js > tmp.js
 var isOnline = require('./browser');
 
-isOnline(function (err, online) {
+isOnline(function (online) {
 	console.log('online', online);
 });
