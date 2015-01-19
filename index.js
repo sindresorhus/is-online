@@ -45,7 +45,7 @@ module.exports = function (cb) {
 		} else {
 			// Either DNS intercepting is in place or the response in mangled,
 			// try connecting to our domains on port 80, and if one handshake
-			// succeeds, we're definately online
+			// succeeds, we're definitely online
 			eachAsync(domains, function (domain, i, next) {
 				var socket = new net.Socket();
 				socket.setTimeout(timeout);
