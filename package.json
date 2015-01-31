@@ -48,7 +48,7 @@
     "log-symbols": "^1.0.0",
     "native-dns": "https://github.com/silverwind/node-dns/tarball/8b75198dd8",
     "onetime": "^1.0.0",
-    "root-hints": "^0.2.0"
+    "root-hints": "^1.0.0"
   },
   "devDependencies": {
     "ava": "0.0.4"
