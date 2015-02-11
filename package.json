@@ -44,7 +44,9 @@
     "detect"
   ],
   "dependencies": {
+    "each-async": "^1.1.1",
     "log-symbols": "^1.0.0",
+    "onetime": "^1.0.0",
     "root-hints": "^1.0.0"
   },
   "devDependencies": {
