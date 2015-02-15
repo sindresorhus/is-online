@@ -44,7 +44,7 @@
     "detect"
   ],
   "dependencies": {
-    "each-async": "^1.1.1",
+    "each-async": "^1.1.0",
     "log-symbols": "^1.0.0",
     "onetime": "^1.0.0",
     "root-hints": "^1.0.0"
