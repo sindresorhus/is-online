@@ -46,17 +46,16 @@ module.exports = function (cb) {
 			// Either DNS intercepting is in place or the response in mangled,
 			// try connecting to our domains on port 80, and if one handshake
 			// succeeds, we're definitely online
-			eachAsync(domains, function (domain, i, next) {
+			eachAsync(domains, function (domain, i, done) {
 				var socket = new net.Socket();
 				socket.setTimeout(timeout);
 				socket.on('error', function () {
 					socket.destroy();
-					next();
 				});
 				socket.connect(80, domain, function () {
 					cb(null, true);
 					socket.end();
-					next(new Error()); // skip to end
+					done(new Error()); // skip to end
 				});
 			}, function () {
 				cb(null, false);
