@@ -51,6 +51,7 @@ module.exports = function (cb) {
 				socket.setTimeout(timeout);
 				socket.on('error', function () {
 					socket.destroy();
+					done();
 				});
 				socket.connect(80, domain, function () {
 					cb(null, true);
