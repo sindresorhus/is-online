@@ -60,7 +60,7 @@ $ npm install --global is-online
 $ is-online --help
 
   Example
-    is-online
+    $ is-online
     ✔︎ Online
 ```
 
