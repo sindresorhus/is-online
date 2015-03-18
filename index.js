@@ -51,10 +51,17 @@ module.exports = function (cb) {
 				done = onetime(done);
 
 				socket.setTimeout(timeout);
+
+				socket.on('timeout', function () {
+					socket.destroy();
+					done();
+				});
+
 				socket.on('error', function () {
 					socket.destroy();
 					done();
 				});
+
 				socket.connect(80, domain, function () {
 					cb(null, true);
 					socket.end();
