@@ -48,6 +48,8 @@ module.exports = function (cb) {
 			// succeeds, we're definitely online
 			eachAsync(domains, function (domain, i, done) {
 				var socket = new net.Socket();
+				done = onetime(done);
+
 				socket.setTimeout(timeout);
 				socket.on('error', function () {
 					socket.destroy();
