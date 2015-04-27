@@ -6,6 +6,7 @@ var onetime = require('onetime');
 var roots = require('root-hints')('A');
 
 var timeout = 1000;
+var transactionID = new Buffer(['0xca', '0xfe']);
 var domains = [
 	'www.google.com',
 	'www.cloudflare.com',
@@ -20,8 +21,7 @@ module.exports = function (cb) {
 	var server = roots[Math.floor(Math.random() * roots.length)];
 
 	// Craft a query for the root server
-	var packet = [
-		'0x21', '0x22', /* Transaction ID */
+	var payload = Buffer.concat([transactionID, new Buffer([
 		'0x01', '0x00', /* Standard Query */
 		'0x00', '0x01', /* Questions: 1   */
 		'0x00', '0x00', /* Answer RRs     */
@@ -30,7 +30,7 @@ module.exports = function (cb) {
 		'0x00',         /* Name:  <root>  */
 		'0x00', '0x02', /* Type:  NS      */
 		'0x00', '0x01'  /* Class: IN      */
-	];
+	])]);
 
 	var udpSocket = dgram.createSocket('udp4');
 
@@ -40,9 +40,9 @@ module.exports = function (cb) {
 	}, timeout);
 
 	udpSocket.on('message', function (msg, rinfo) {
-		if (rinfo.address === server) {
-			// We got an answer and the source matches the queried server,
-			// we're online with high confidence
+		if (msg.slice(0, 2).equals(transactionID) && rinfo.address === server) {
+			// We got an answer with a matching Transaction ID and the source
+			// matches the queried server, we're online with high confidence
 			cb(null, true);
 		} else {
 			// Either DNS intercepting is in place or the response in mangled,
@@ -75,5 +75,5 @@ module.exports = function (cb) {
 		}
 	});
 
-	udpSocket.send(new Buffer(packet), 0, packet.length, 53, server);
+	udpSocket.send(payload, 0, payload.length, 53, server);
 };
