@@ -67,7 +67,9 @@ $ is-online --help
 
 ## How it works
 
-In node, we first contact one of the thirteen [root servers](https://www.iana.org/domains/root/servers) and ask them to direct us to the servers which host the `.com` zone. If they answer us, we return an online status, if no answer is given within one second, we return an offline status. In the rare case where an firewall intercepts the packet and answers it on its behalf, a second check is run which tries to connect to a series of popular web sites on port 80. If one of these connects, we return online, otherwise offline status.
+In node, we first contact one of the thirteen [root servers](https://www.iana.org/domains/root/servers) and ask them to direct us to the servers which host the `<root>` zone (Which they are themselves). If the server answers, we return an online status.
+
+If no satisfying answer is given within one second, we return an offline status. In the rare case where an firewall intercepts the packet and answers it on its behalf, a second check is run which tries to connect to a series of popular web sites on port 80. If one of these connects, we return online, otherwise offline status.
 
 In the browser, a sophisticated check like in node is not possible because DNS and sockets are abstracted away. We use a check which requests an uncached `favicon.ico` on a series of popular websites. If one of this checks succeeds, we return online status. If all the requests fail, we return offline status.
 
