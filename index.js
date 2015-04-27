@@ -1,5 +1,5 @@
 'use strict';
-var dns = require('native-dns');
+var dgram = require('dgram');
 var net = require('net');
 var eachAsync = require('each-async');
 var onetime = require('onetime');
@@ -19,26 +19,28 @@ module.exports = function (cb) {
 	// Pick a random root server to query
 	var server = roots[Math.floor(Math.random() * roots.length)];
 
-	// Set up a DNS request that requests the authoritative information for
-	// the 'com' zone
-	var req = dns.Request({
-		question: dns.Question({
-			name: 'com',
-			type: 'NS'
-		}),
-		server: {
-			address: server
-		},
-		timeout: timeout
-	});
+	// Craft a query for the root server
+	var packet = [
+		'0x21', '0x22', /* Transaction ID */
+		'0x01', '0x00', /* Standard Query */
+		'0x00', '0x01', /* Questions: 1   */
+		'0x00', '0x00', /* Answer RRs     */
+		'0x00', '0x00', /* Authority RRs  */
+		'0x00', '0x00', /* Additional RRs */
+		'0x00',         /* Name:  <root>  */
+		'0x00', '0x02', /* Type:  NS      */
+		'0x00', '0x01'  /* Class: IN      */
+	];
 
-	req.on('timeout', function () {
+	var udpSocket = dgram.createSocket('udp4');
+
+	setTimeout(function () {
 		// We ran into the timeout, we're offline with high confidence
 		cb(null, false);
-	});
+	}, timeout);
 
-	req.on('message', function (err, answer) {
-		if (answer.authority.length && answer._socket.address === server) {
+	udpSocket.on('message', function (msg, rinfo) {
+		if (rinfo.address === server) {
 			// We got an answer and the source matches the queried server,
 			// we're online with high confidence
 			cb(null, true);
@@ -73,5 +75,5 @@ module.exports = function (cb) {
 		}
 	});
 
-	req.send();
+	udpSocket.send(new Buffer(packet), 0, packet.length, 53, server);
 };
