@@ -20,7 +20,7 @@ module.exports = function (cb) {
 	// Pick a random root server to query
 	var server = roots[Math.floor(Math.random() * roots.length)];
 
-	// Craft a query for the root server
+	// Craft a DNS query
 	var payload = Buffer.concat([transactionID, new Buffer([
 		'0x01', '0x00', /* Standard Query */
 		'0x00', '0x01', /* Questions: 1   */
@@ -33,11 +33,6 @@ module.exports = function (cb) {
 	])]);
 
 	var udpSocket = dgram.createSocket('udp4');
-
-	setTimeout(function () {
-		// We ran into the timeout, we're offline with high confidence
-		cb(null, false);
-	}, timeout);
 
 	udpSocket.on('message', function (msg, rinfo) {
 		if (msg.slice(0, 2).equals(transactionID) && rinfo.address === server) {
@@ -73,7 +68,14 @@ module.exports = function (cb) {
 				cb(null, false);
 			});
 		}
+		udpSocket.unref();
 	});
 
-	udpSocket.send(payload, 0, payload.length, 53, server);
+	udpSocket.send(payload, 0, payload.length, 53, server, function () {
+		setTimeout(function () {
+			// We ran into the timeout, we're offline with high confidence
+			cb(null, false);
+		}, timeout);
+		udpSocket.unref();
+	});
 };
