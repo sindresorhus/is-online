@@ -35,7 +35,8 @@ module.exports = function (cb) {
 	var udpSocket = dgram.createSocket('udp4');
 
 	udpSocket.on('message', function (msg, rinfo) {
-		if (msg.slice(0, 2).equals(transactionID) && rinfo.address === server) {
+		if (msg && msg.length >= 2 && msg[0] === transactionID[0] &&
+		    msg[1] === transactionID[1] && rinfo.address === server) {
 			// We got an answer with a matching Transaction ID and the source
 			// matches the queried server, we're online with high confidence
 			cb(null, true);
