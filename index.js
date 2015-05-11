@@ -6,7 +6,7 @@ var onetime = require('onetime');
 var roots = require('root-hints')('A');
 
 var timeout = 1000;
-var transactionID = new Buffer(['0xca', '0xfe']);
+var transactionID = new Buffer([0xCA, 0xFE]);
 var domains = [
 	'www.google.com',
 	'www.cloudflare.com',
