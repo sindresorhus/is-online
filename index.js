@@ -22,14 +22,14 @@ module.exports = function (cb) {
 
 	// Craft a DNS query
 	var payload = Buffer.concat([transactionID, new Buffer([
-		'0x01', '0x00', /* Standard Query */
-		'0x00', '0x01', /* Questions: 1   */
-		'0x00', '0x00', /* Answer RRs     */
-		'0x00', '0x00', /* Authority RRs  */
-		'0x00', '0x00', /* Additional RRs */
-		'0x00',         /* Name:  <root>  */
-		'0x00', '0x02', /* Type:  NS      */
-		'0x00', '0x01'  /* Class: IN      */
+		0x01, 0x00, /* Standard Query */
+		0x00, 0x01, /* Questions: 1   */
+		0x00, 0x00, /* Answer RRs     */
+		0x00, 0x00, /* Authority RRs  */
+		0x00, 0x00, /* Additional RRs */
+		0x00,       /* Name:  <root>  */
+		0x00, 0x02, /* Type:  NS      */
+		0x00, 0x01  /* Class: IN      */
 	])]);
 
 	var udpSocket = dgram.createSocket('udp4');
