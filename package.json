@@ -7,14 +7,12 @@
   "author": {
     "name": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "http://sindresorhus.com"
+    "url": "sindresorhus.com"
   },
   "contributors": [
     "silverwind <me@silverwind.io> (https://github.com/silverwind)"
   ],
-  "bin": {
-    "is-online": "cli.js"
-  },
+  "bin": "cli.js",
   "browser": "browser.js",
   "engines": {
     "node": ">=0.10.0"
