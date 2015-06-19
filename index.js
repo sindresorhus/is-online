@@ -36,7 +36,7 @@ module.exports = function (cb) {
 
 	udpSocket.on('message', function (msg, rinfo) {
 		if (msg && msg.length >= 2 && msg[0] === transactionID[0] &&
-		    msg[1] === transactionID[1] && rinfo.address === server) {
+			msg[1] === transactionID[1] && rinfo.address === server) {
 			// We got an answer with a matching Transaction ID and the source
 			// matches the queried server, we're online with high confidence
 			cb(null, true);
@@ -63,7 +63,9 @@ module.exports = function (cb) {
 				socket.connect(80, domain, function () {
 					cb(null, true);
 					socket.end();
-					done(new Error()); // skip to end
+
+					// skip to end
+					done(new Error());
 				});
 			}, function () {
 				cb(null, false);
