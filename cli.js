@@ -9,7 +9,7 @@ meow({
 		'Example',
 		'  $ is-online',
 		'  ' + logSymbols.success + ' Online'
-	].join('\n')
+	]
 });
 
 isOnline(function (err, online) {
