@@ -2,7 +2,7 @@
 
 > Check if the internet connection is up
 
-Works in Node.js, CLI and the browser *(with [browserify](http://browserify.org))*.
+Works in Node.js and the browser *(with [browserify](http://browserify.org))*.
 
 In the browser you have [`navigator.onLine`](https://developer.mozilla.org/en-US/docs/Web/API/NavigatorOnLine.onLine), but it's useless as it only tells you if there's a local connection, and not whether the internet is accessible.
 
@@ -43,23 +43,6 @@ Type: `function`
 Same as above except the `callback` doesn't have an `error` parameter.
 
 
-## CLI
-
-<img src="screenshot.png" width="397">
-
-```
-$ npm install --global is-online
-```
-
-```
-$ is-online --help
-
-  Example
-    $ is-online
-    ✔︎ Online
-```
-
-
 ## How it works
 
 In node, we first contact one of the thirteen [root servers](https://www.iana.org/domains/root/servers) and ask them to direct us to the servers which host the `<root>` zone (Which they are themselves). If the server answers, we return an online status.
@@ -76,6 +59,7 @@ In the browser, a sophisticated check like in node is not possible because DNS a
 
 ## Related
 
+- [is-online-cli](https://github.com/sindresorhus/is-online-cli) - CLI for this module
 - [is-reachable](https://github.com/sindresorhus/is-reachable) - Check if servers are reachable
 
 

@@ -12,7 +12,6 @@
   "contributors": [
     "silverwind <me@silverwind.io> (github.com/silverwind)"
   ],
-  "bin": "cli.js",
   "browser": "browser.js",
   "engines": {
     "node": ">=0.10.0"
@@ -22,13 +21,9 @@
   },
   "files": [
     "index.js",
-    "cli.js",
     "browser.js"
   ],
   "keywords": [
-    "cli-app",
-    "cli",
-    "bin",
     "browser",
     "online",
     "offline",
@@ -50,8 +45,6 @@
   ],
   "dependencies": {
     "is-reachable": "^1.0.0",
-    "log-symbols": "^1.0.0",
-    "meow": "^3.3.0",
     "onetime": "^1.0.0",
     "root-hints": "^1.0.0"
   },
