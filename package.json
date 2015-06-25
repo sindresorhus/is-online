@@ -42,7 +42,7 @@
     "detect"
   ],
   "dependencies": {
-    "each-async": "^1.1.0",
+    "is-reachable": "^1.0.0",
     "log-symbols": "^1.0.0",
     "meow": "^3.3.0",
     "onetime": "^1.0.0",

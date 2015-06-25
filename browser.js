@@ -1,8 +1,6 @@
 'use strict';
-var eachAsync = require('each-async');
-var onetime = require('onetime');
-
-var domains = [
+var isReachable = require('is-reachable');
+var hostnames = [
 	'www.google.com',
 	'www.cloudflare.com',
 	'www.baidu.com',
@@ -10,22 +8,5 @@ var domains = [
 ];
 
 module.exports = function (cb) {
-	cb = onetime(cb);
-
-	eachAsync(domains, function (domain, i, next) {
-		var img = new Image();
-
-		img.onload = function () {
-			cb(true);
-			next(new Error); // skip to end
-		};
-
-		img.onerror = function () {
-			next();
-		};
-
-		img.src = '//' + domain + '/favicon.ico?' + Date.now();
-	}, function () {
-		cb(false);
-	});
+	isReachable(hostnames, cb);
 };

@@ -1,9 +1,8 @@
 'use strict';
 var dgram = require('dgram');
-var net = require('net');
-var eachAsync = require('each-async');
 var onetime = require('onetime');
 var roots = require('root-hints')('A');
+var isReachable = require('is-reachable');
 
 var timeout = 1000;
 var transactionID = new Buffer([0xCA, 0xFE]);
@@ -44,32 +43,7 @@ module.exports = function (cb) {
 			// Either DNS intercepting is in place or the response in mangled,
 			// try connecting to our domains on port 80, and if one handshake
 			// succeeds, we're definitely online
-			eachAsync(domains, function (domain, i, done) {
-				var socket = new net.Socket();
-				done = onetime(done);
-
-				socket.setTimeout(timeout);
-
-				socket.on('timeout', function () {
-					socket.destroy();
-					done();
-				});
-
-				socket.on('error', function () {
-					socket.destroy();
-					done();
-				});
-
-				socket.connect(80, domain, function () {
-					cb(null, true);
-					socket.end();
-
-					// skip to end
-					done(new Error());
-				});
-			}, function () {
-				cb(null, false);
-			});
+			isReachable(domains, cb);
 		}
 		udpSocket.unref();
 	});
