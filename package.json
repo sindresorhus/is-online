@@ -10,7 +10,7 @@
     "url": "sindresorhus.com"
   },
   "contributors": [
-    "silverwind <me@silverwind.io> (https://github.com/silverwind)"
+    "silverwind <me@silverwind.io> (github.com/silverwind)"
   ],
   "bin": "cli.js",
   "browser": "browser.js",
@@ -39,7 +39,14 @@
     "internet",
     "is",
     "has",
-    "detect"
+    "detect",
+    "hostname",
+    "hostnames",
+    "dns",
+    "socket",
+    "reachable",
+    "reachability",
+    "accessible"
   ],
   "dependencies": {
     "is-reachable": "^1.0.0",

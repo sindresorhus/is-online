@@ -45,6 +45,7 @@ module.exports = function (cb) {
 			// succeeds, we're definitely online
 			isReachable(domains, cb);
 		}
+
 		udpSocket.unref();
 	});
 
@@ -53,6 +54,7 @@ module.exports = function (cb) {
 			// We ran into the timeout, we're offline with high confidence
 			cb(null, false);
 		}, timeout);
+
 		udpSocket.unref();
 	});
 };

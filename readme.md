@@ -9,7 +9,7 @@ In the browser you have [`navigator.onLine`](https://developer.mozilla.org/en-US
 
 ## Install
 
-```sh
+```
 $ npm install --save is-online
 ```
 
@@ -40,19 +40,14 @@ Type: `function`
 
 ## Browser API
 
-### isOnline(callback)
-
-#### callback(online)
-
-*Required*  
-Type: `function`
+Same as above except the `callback` doesn't have an `error` parameter.
 
 
 ## CLI
 
 <img src="screenshot.png" width="397">
 
-```sh
+```
 $ npm install --global is-online
 ```
 
@@ -77,6 +72,11 @@ In the browser, a sophisticated check like in node is not possible because DNS a
 ## Contributors
 
 - [silverwind](https://github.com/silverwind)
+
+
+## Related
+
+- [is-reachable](https://github.com/sindresorhus/is-reachable) - Check if servers are reachable
 
 
 ## License
