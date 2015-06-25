@@ -21,7 +21,8 @@
   },
   "files": [
     "index.js",
-    "browser.js"
+    "browser.js",
+    "hostnames.js"
   ],
   "keywords": [
     "browser",

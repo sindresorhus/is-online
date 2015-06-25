@@ -1,11 +1,6 @@
 'use strict';
 var isReachable = require('is-reachable');
-var hostnames = [
-	'www.google.com',
-	'www.cloudflare.com',
-	'www.baidu.com',
-	'www.yandex.ru'
-];
+var hostnames = require('./hostnames');
 
 module.exports = function (cb) {
 	isReachable(hostnames, cb);

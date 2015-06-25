@@ -3,15 +3,10 @@ var dgram = require('dgram');
 var onetime = require('onetime');
 var roots = require('root-hints')('A');
 var isReachable = require('is-reachable');
+var hostnames = require('./hostnames');
 
 var timeout = 1000;
 var transactionID = new Buffer([0xCA, 0xFE]);
-var domains = [
-	'www.google.com',
-	'www.cloudflare.com',
-	'www.baidu.com',
-	'www.yandex.ru'
-];
 
 module.exports = function (cb) {
 	cb = onetime(cb);
@@ -41,9 +36,9 @@ module.exports = function (cb) {
 			cb(null, true);
 		} else {
 			// Either DNS intercepting is in place or the response in mangled,
-			// try connecting to our domains on port 80, and if one handshake
+			// try connecting to our hostnames on port 80, and if one handshake
 			// succeeds, we're definitely online
-			isReachable(domains, cb);
+			isReachable(hostnames, cb);
 		}
 
 		udpSocket.unref();
