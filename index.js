@@ -3,6 +3,7 @@ var dgram = require('dgram');
 var onetime = require('onetime');
 var roots = require('root-hints')('A');
 var isReachable = require('is-reachable');
+var randomItem = require('random-item');
 var hostnames = require('./hostnames');
 
 var timeout = 1000;
@@ -12,7 +13,7 @@ module.exports = function (cb) {
 	cb = onetime(cb);
 
 	// Pick a random root server to query
-	var server = roots[Math.floor(Math.random() * roots.length)];
+	var server = randomItem(roots);
 
 	// Craft a DNS query
 	var payload = Buffer.concat([transactionID, new Buffer([
