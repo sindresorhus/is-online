@@ -7,7 +7,6 @@ var randomItem = require('random-item');
 var hostnames = require('./hostnames');
 
 var timeout = 1000;
-var transactionID = new Buffer([0xCA, 0xFE]);
 
 module.exports = function (cb) {
 	cb = onetime(cb);
@@ -16,7 +15,8 @@ module.exports = function (cb) {
 	var server = randomItem(roots);
 
 	// Craft a DNS query
-	var payload = Buffer.concat([transactionID, new Buffer([
+	var payload = new Buffer([
+		0x00, 0x00, /* Transaction ID */
 		0x01, 0x00, /* Standard Query */
 		0x00, 0x01, /* Questions: 1   */
 		0x00, 0x00, /* Answer RRs     */
@@ -25,20 +25,19 @@ module.exports = function (cb) {
 		0x00,       /* Name:  <root>  */
 		0x00, 0x02, /* Type:  NS      */
 		0x00, 0x01  /* Class: IN      */
-	])]);
+	]);
 
 	var udpSocket = dgram.createSocket('udp4');
 
 	udpSocket.on('message', function (msg, rinfo) {
-		if (msg && msg.length >= 2 && msg[0] === transactionID[0] &&
-			msg[1] === transactionID[1] && rinfo.address === server) {
-			// We got an answer with a matching Transaction ID and the source
-			// matches the queried server, we're online with high confidence
+		if (msg && msg.length >= 2 && rinfo.address === server) {
+			// We got an answer where the source matches the queried server,
+			// we're online with high confidence
 			cb(null, true);
 		} else {
-			// Either DNS intercepting is in place or the response in mangled,
-			// try connecting to our hostnames on port 80, and if one handshake
-			// succeeds, we're definitely online
+			// We got an answer, but it appears to not come from the queried
+			// server. Try connecting to our hostnames on port 80 and if one
+			// handshake succeeds, we're definitely online
 			isReachable(hostnames, cb);
 		}
 
