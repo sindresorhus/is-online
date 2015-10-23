@@ -41,15 +41,18 @@ module.exports = function (cb) {
 			isReachable(hostnames, cb);
 		}
 
-		udpSocket.unref();
+		udpSocket.close();
+		udpSocket = null;
 	});
 
 	udpSocket.send(payload, 0, payload.length, 53, server, function () {
 		setTimeout(function () {
 			// We ran into the timeout, we're offline with high confidence
 			cb(null, false);
-		}, timeout);
 
-		udpSocket.unref();
+			if (udpSocket) {
+				udpSocket.close();
+			}
+		}, timeout);
 	});
 };
