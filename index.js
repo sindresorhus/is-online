@@ -6,7 +6,7 @@ var isReachable = require('is-reachable');
 var randomItem = require('random-item');
 var hostnames = require('./hostnames');
 
-var timeout = 1000;
+var timeout = 2000;
 
 module.exports = function (cb) {
 	cb = onetime(cb);
