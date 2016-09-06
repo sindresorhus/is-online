@@ -4,11 +4,20 @@ var onetime = require('onetime');
 var roots = require('root-hints')('A');
 var isReachable = require('is-reachable');
 var randomItem = require('random-item');
-var hostnames = require('./hostnames');
 
-var timeout = 2000;
+var def = {
+	hostnames: require('./hostnames'),
+	timeout: 2000
+};
 
-module.exports = function (cb) {
+module.exports = function (options, cb) {
+	if (typeof options === 'function') {
+		cb = options;
+		options = {};
+	}
+	var hostnames = options.hostnames || def.hostnames;
+	var timeout = options.timeout || def.timeout;
+
 	cb = onetime(cb);
 
 	// Pick a random root server to query

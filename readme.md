@@ -16,19 +16,48 @@ $ npm install --save is-online
 
 ## Usage
 
+The basic use
+
 ```js
 var isOnline = require('is-online');
 
 isOnline(function(err, online) {
 	console.log(online);
-	//=> true
+	// => true
+});
+```
+
+Custom options
+
+```js
+var isOnline = require('is-online');
+isOnline({ timeout: 1000, hostnames: ['youtu.be'] }, function(err, online) {
+	console.log(online);
+	// => true
 });
 ```
 
 
 ## Node API
 
-### isOnline(callback)
+### isOnline([options,]callback)
+
+#### options
+
+*Optional*  
+Type: `object`
+
+##### timeout
+
+Type: `number`
+
+Milliseconds to wait for a server to send response.
+
+##### hostnames
+
+Type: `string`, `array`
+
+One or more hosts to check.
 
 #### callback(error, online)
 
