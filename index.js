@@ -15,8 +15,7 @@ module.exports = function (options, cb) {
 		options = {};
 	}
 
-	// Default options
-	options = objectAssign({ hostnames: hostnames, timeout: timeout }, options)
+	options = objectAssign({ hostnames: hostnames, timeout: timeout }, options);
 
 	cb = onetime(cb);
 
