@@ -39,13 +39,17 @@ Type: `object`
 
 Type: `number`
 
-Milliseconds to wait for a server to send response. (Default: 2000)
+Default: 2000
+
+Milliseconds to wait for a server to send response.
 
 ##### hostnames
 
 Type: `string`, `array`
 
-One or more hosts to check. (Default: ['www.google.com', 'www.cloudflare.com', 'www.baidu.com', 'www.yandex.ru'])
+Default: ['www.google.com', 'www.cloudflare.com', 'www.baidu.com', 'www.yandex.ru']
+
+One or more hosts to check.
 
 #### callback(error, online)
 

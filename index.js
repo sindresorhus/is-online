@@ -9,8 +9,6 @@ var hostnames = require('./hostnames');
 
 var timeout = 2000;
 
-var defaults = { hostnames: hostnames, timeout: timeout }
-
 module.exports = function (options, cb) {
 	if (typeof options === 'function') {
 		cb = options;
@@ -18,7 +16,7 @@ module.exports = function (options, cb) {
 	}
 
 	// Default options
-	options = objectAssign({}, defaults, options)
+	options = objectAssign({ hostnames: hostnames, timeout: timeout }, options)
 
 	cb = onetime(cb);
 
