@@ -39,6 +39,7 @@ module.exports = function (options, cb) {
 
 	eachAsync(servers, function (server, i, done) {
 		var udpSocket = dgram.createSocket('udp4');
+	  var socketTimeout;
 		udpSocket.on('message', function (msg, rinfo) {
 			if (msg && msg.length >= 2 && rinfo.address === server) {
 				// We got an answer where the source matches the queried server,
@@ -50,15 +51,17 @@ module.exports = function (options, cb) {
 				// handshake succeeds, we're definitely online
 				isReachable(hostnames, cb);
 			}
-			done(new Error());
+			clearTimeout(socketTimeout);
+			done();
 
 			udpSocket.close();
 			udpSocket = null;
 		});
 
 		udpSocket.send(payload, 0, payload.length, 53, server, function () {
-			setTimeout(function () {
+			socketTimeout = setTimeout(function () {
 				// We ran into the timeout, we're offline with high confidence
+			  cb(null, false);
 				done();
 
 				if (udpSocket) {
@@ -66,7 +69,5 @@ module.exports = function (options, cb) {
 				}
 			}, options.timeout);
 		});
-	}, function () {
-		cb(null, false);
 	});
 };
