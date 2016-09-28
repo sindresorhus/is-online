@@ -4,19 +4,21 @@ var onetime = require('onetime');
 var roots = require('root-hints')('A');
 var isReachable = require('is-reachable');
 var randomItem = require('random-item');
+var objectAssign = require('object-assign');
+var hostnames = require('./hostnames');
 
-var def = {
-	hostnames: require('./hostnames'),
-	timeout: 2000
-};
+var timeout = 2000;
+
+var defaults = { hostnames: hostnames, timeout: timeout }
 
 module.exports = function (options, cb) {
 	if (typeof options === 'function') {
 		cb = options;
 		options = {};
 	}
-	var hostnames = options.hostnames || def.hostnames;
-	var timeout = options.timeout || def.timeout;
+
+	// Default options
+	options = objectAssign({}, defaults, options)
 
 	cb = onetime(cb);
 
@@ -47,7 +49,7 @@ module.exports = function (options, cb) {
 			// We got an answer, but it appears to not come from the queried
 			// server. Try connecting to our hostnames on port 80 and if one
 			// handshake succeeds, we're definitely online
-			isReachable(hostnames, cb);
+			isReachable(options.hostnames, cb);
 		}
 
 		udpSocket.close();
@@ -62,6 +64,6 @@ module.exports = function (options, cb) {
 			if (udpSocket) {
 				udpSocket.close();
 			}
-		}, timeout);
+		}, options.timeout);
 	});
 };
