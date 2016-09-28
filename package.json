@@ -46,6 +46,7 @@
   ],
   "dependencies": {
     "is-reachable": "^1.3.0",
+    "object-assign": "^4.1.0",
     "onetime": "^1.1.0",
     "random-item": "^1.0.0",
     "root-hints": "^1.0.0"

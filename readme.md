@@ -28,7 +28,28 @@ isOnline(function(err, online) {
 
 ## Node API
 
-### isOnline(callback)
+### isOnline([options], callback)
+
+#### options
+
+*Optional*  
+Type: `object`
+
+##### timeout
+
+Type: `number`
+
+Default: 2000
+
+Milliseconds to wait for a server to send response.
+
+##### hostnames
+
+Type: `string`, `array`
+
+Default: ['www.google.com', 'www.cloudflare.com', 'www.baidu.com', 'www.yandex.ru']
+
+One or more hosts to check.
 
 #### callback(error, online)
 
