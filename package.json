@@ -45,11 +45,12 @@
     "accessible"
   ],
   "dependencies": {
+    "each-async": "^1.1.1",
     "is-reachable": "^1.3.0",
     "object-assign": "^4.1.0",
     "onetime": "^1.1.0",
-    "random-item": "^1.0.0",
-    "root-hints": "^1.0.0"
+    "root-hints": "^1.0.0",
+    "unique-random-array": "^1.0.0"
   },
   "devDependencies": {
     "ava": "0.0.4"
