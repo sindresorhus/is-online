@@ -45,9 +45,9 @@
     "accessible"
   ],
   "dependencies": {
-    "is-reachable": "^1.3.0",
+    "is-reachable": "^2.0.0",
     "object-assign": "^4.1.0",
-    "onetime": "^1.1.0",
+    "pinkie-promise": "^2.0.1",
     "random-item": "^1.0.0",
     "root-hints": "^1.0.0"
   },
