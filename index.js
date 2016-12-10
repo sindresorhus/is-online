@@ -18,16 +18,13 @@ module.exports = function (options) {
 	// Pick a random root server to query
 	var server = randomItem(roots);
 
-	var prom = new Promise(function (resolve, reject)
-	{
+	var prom = new Promise(function (resolve, reject) {
 		subscribeUdpSocketOnMessageReceived(udpSocket, server, options)
-			.then(function(result)
-			{
+			.then(function (result) {
 				resolve(result);
 			});
 		sendPackage(udpSocket, server, options)
-			.then(function(result)
-			{
+			.then(function (result) {
 				resolve(result);
 			});
 	});
@@ -35,18 +32,15 @@ module.exports = function (options) {
 	return prom;
 };
 
-function getOptions(options)
-{
-	if (options === undefined)
-	{
+function getOptions(options) {
+	if (options === undefined) {
 		options = {};
 	}
 	return objectAssign({ hostnames: hostnames, timeout: timeout }, options);
 }
 
-function getDefaultPayload()
-	{
-		return new Buffer([
+function getDefaultPayload() {
+	return new Buffer([
 		0x00, 0x00, /* Transaction ID */
 		0x01, 0x00, /* Standard Query */
 		0x00, 0x01, /* Questions: 1   */
@@ -59,10 +53,8 @@ function getDefaultPayload()
 	]);
 }
 
-function subscribeUdpSocketOnMessageReceived(udpSocket, server, options)
-{
-	return new Promise(function (resolve, reject)
-	{
+function subscribeUdpSocketOnMessageReceived(udpSocket, server, options) {
+	return new Promise(function (resolve, reject) {
 		udpSocket.on('message', function (msg, rinfo) {
 			udpSocket.close();
 			udpSocket = null;
@@ -80,10 +72,8 @@ function subscribeUdpSocketOnMessageReceived(udpSocket, server, options)
 	});
 }
 
-function sendPackage(udpSocket, server, options)
-{
-	return new Promise(function (resolve, reject)
-	{
+function sendPackage(udpSocket, server, options) {
+	return new Promise(function (resolve, reject) {
 		// Craft a DNS query
 		var payload = getDefaultPayload();
 

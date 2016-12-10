@@ -3,6 +3,6 @@
 'use strict';
 var isOnline = require('./browser');
 
-isOnline().then(function(online) {
+isOnline().then(function (online) {
 	console.log('online', online);
 });
