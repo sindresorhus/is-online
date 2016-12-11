@@ -32,7 +32,7 @@ isOnline()
 
 ## Node API
 
-### isOnline([options], callback)
+### isOnline([options])
 
 #### options
 
