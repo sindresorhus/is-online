@@ -11,8 +11,7 @@ var timeout = 2000;
 
 
 module.exports = function (options) {
-	options = getOptions(options);
-
+	options = objectAssign({ hostnames: hostnames, timeout: timeout }, options);
 	var udpSocket = dgram.createSocket('udp4');
 
 	// Pick a random root server to query
@@ -31,13 +30,6 @@ module.exports = function (options) {
 
 	return prom;
 };
-
-function getOptions(options) {
-	if (options === undefined) {
-		options = {};
-	}
-	return objectAssign({ hostnames: hostnames, timeout: timeout }, options);
-}
 
 function getDefaultPayload() {
 	return new Buffer([
