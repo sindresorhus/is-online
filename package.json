@@ -14,10 +14,10 @@
   ],
   "browser": "browser.js",
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=4"
   },
   "scripts": {
-    "test": "node test.js"
+    "test": "ava test.js"
   },
   "files": [
     "index.js",
@@ -52,6 +52,6 @@
     "root-hints": "^1.0.0"
   },
   "devDependencies": {
-    "ava": "0.0.4"
+    "ava": "^0.17.0"
   }
 }
