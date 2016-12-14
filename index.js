@@ -18,28 +18,14 @@ module.exports = (options) => {
 	var server = randomItem(roots);
 
 	var promise = new Promise((resolve) => {
-		subscribeUdpSocketOnMessageReceived(udpSocket, server, options, resolve);
-		sendPackage(udpSocket, server, options, resolve);
+		listen(udpSocket, server, options, resolve);
+		send(udpSocket, server, options, resolve);
 	});
 
 	return promise;
 };
 
-function getDefaultPayload() {
-	return new Buffer([
-		0x00, 0x00, /* Transaction ID */
-		0x01, 0x00, /* Standard Query */
-		0x00, 0x01, /* Questions: 1   */
-		0x00, 0x00, /* Answer RRs     */
-		0x00, 0x00, /* Authority RRs  */
-		0x00, 0x00, /* Additional RRs */
-		0x00,       /* Name:  <root>  */
-		0x00, 0x02, /* Type:  NS      */
-		0x00, 0x01  /* Class: IN      */
-	]);
-}
-
-function subscribeUdpSocketOnMessageReceived(udpSocket, server, options, resolve) {
+function listen(udpSocket, server, options, resolve) {
 	udpSocket.on('message', (msg, rinfo) => {
 		udpSocket.close();
 		udpSocket = null;
@@ -56,7 +42,7 @@ function subscribeUdpSocketOnMessageReceived(udpSocket, server, options, resolve
 	});
 }
 
-function sendPackage(udpSocket, server, options, resolve) {
+function send(udpSocket, server, options, resolve) {
 	// Craft a DNS query
 	var payload = getDefaultPayload();
 
@@ -69,4 +55,18 @@ function sendPackage(udpSocket, server, options, resolve) {
 			resolve(false);
 		}, options.timeout);
 	});
+}
+
+function getDefaultPayload() {
+	return new Buffer([
+		0x00, 0x00, /* Transaction ID */
+		0x01, 0x00, /* Standard Query */
+		0x00, 0x01, /* Questions: 1   */
+		0x00, 0x00, /* Answer RRs     */
+		0x00, 0x00, /* Authority RRs  */
+		0x00, 0x00, /* Additional RRs */
+		0x00,       /* Name:  <root>  */
+		0x00, 0x02, /* Type:  NS      */
+		0x00, 0x01  /* Class: IN      */
+	]);
 }

@@ -19,11 +19,10 @@ $ npm install --save is-online
 ```js
 var isOnline = require('is-online');
 
-isOnline()
-	.then(function (online) { 
-		console.log(online);
-		//=> true
-	});
+isOnline().then((online) => { 
+	console.log(online);
+	//=> true
+});
 ```
 
 
