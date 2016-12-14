@@ -10,25 +10,19 @@ var Promise = require('pinkie-promise');
 var timeout = 2000;
 
 
-module.exports = function (options) {
-	options = objectAssign({ hostnames: hostnames, timeout: timeout }, options);
+module.exports = (options) => {
+	options = Object.assign({ hostnames: hostnames, timeout: timeout }, options);
 	var udpSocket = dgram.createSocket('udp4');
 
 	// Pick a random root server to query
 	var server = randomItem(roots);
 
-	var prom = new Promise(function (resolve, reject) {
-		subscribeUdpSocketOnMessageReceived(udpSocket, server, options)
-			.then(function (result) {
-				resolve(result);
-			});
-		sendPackage(udpSocket, server, options)
-			.then(function (result) {
-				resolve(result);
-			});
+	var promise = new Promise((resolve) => {
+		subscribeUdpSocketOnMessageReceived(udpSocket, server, options, resolve);
+		sendPackage(udpSocket, server, options, resolve);
 	});
 
-	return prom;
+	return promise;
 };
 
 function getDefaultPayload() {
@@ -45,38 +39,34 @@ function getDefaultPayload() {
 	]);
 }
 
-function subscribeUdpSocketOnMessageReceived(udpSocket, server, options) {
-	return new Promise(function (resolve, reject) {
-		udpSocket.on('message', function (msg, rinfo) {
-			udpSocket.close();
-			udpSocket = null;
-			if (msg && msg.length >= 2 && rinfo.address === server) {
-				// We got an answer where the source matches the queried server,
-				// we're online with high confidence
-				resolve(true);
-			} else {
-				// We got an answer, but it appears to not come from the queried
-				// server. Try connecting to our hostnames on port 80 and if one
-				// handshake succeeds, we're definitely online
-				resolve(isReachable(options.hostnames));
-			}
-		});
+function subscribeUdpSocketOnMessageReceived(udpSocket, server, options, resolve) {
+	udpSocket.on('message', (msg, rinfo) => {
+		udpSocket.close();
+		udpSocket = null;
+		if (msg && msg.length >= 2 && rinfo.address === server) {
+			// We got an answer where the source matches the queried server,
+			// we're online with high confidence
+			resolve(true);
+		} else {
+			// We got an answer, but it appears to not come from the queried
+			// server. Try connecting to our hostnames on port 80 and if one
+			// handshake succeeds, we're definitely online
+			resolve(isReachable(options.hostnames));
+		}
 	});
 }
 
-function sendPackage(udpSocket, server, options) {
-	return new Promise(function (resolve, reject) {
-		// Craft a DNS query
-		var payload = getDefaultPayload();
+function sendPackage(udpSocket, server, options, resolve) {
+	// Craft a DNS query
+	var payload = getDefaultPayload();
 
-		udpSocket.send(payload, 0, payload.length, 53, server, function () {
-			setTimeout(function () {
-				// We ran into the timeout, we're offline with high confidence
-				if (udpSocket) {
-					udpSocket.close();
-				}
-				resolve(false);
-			}, options.timeout);
-		});
+	udpSocket.send(payload, 0, payload.length, 53, server, () => {
+		setTimeout(() => {
+			// We ran into the timeout, we're offline with high confidence
+			if (udpSocket) {
+				udpSocket.close();
+			}
+			resolve(false);
+		}, options.timeout);
 	});
 }
