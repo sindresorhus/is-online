@@ -1,34 +1,29 @@
 'use strict';
-var dgram = require('dgram');
-var roots = require('root-hints')('A');
-var isReachable = require('is-reachable');
-var randomItem = require('random-item');
-var objectAssign = require('object-assign');
-var hostnames = require('./hostnames');
-var Promise = require('pinkie-promise');
+const dgram = require('dgram');
+const roots = require('root-hints')('A');
+const isReachable = require('is-reachable');
+const randomItem = require('random-item');
+const hostnames = require('./hostnames');
 
-var timeout = 2000;
+const timeout = 2000;
 
+const getDefaultPayload = () => new Buffer([
+	0x00, 0x00, /* Transaction ID */
+	0x01, 0x00, /* Standard Query */
+	0x00, 0x01, /* Questions: 1   */
+	0x00, 0x00, /* Answer RRs     */
+	0x00, 0x00, /* Authority RRs  */
+	0x00, 0x00, /* Additional RRs */
+	0x00,       /* Name:  <root>  */
+	0x00, 0x02, /* Type:  NS      */
+	0x00, 0x01  /* Class: IN      */
+]);
 
-module.exports = (options) => {
-	options = Object.assign({ hostnames: hostnames, timeout: timeout }, options);
-	var udpSocket = dgram.createSocket('udp4');
-
-	// Pick a random root server to query
-	var server = randomItem(roots);
-
-	var promise = new Promise((resolve) => {
-		listen(udpSocket, server, options, resolve);
-		send(udpSocket, server, options, resolve);
-	});
-
-	return promise;
-};
-
-function listen(udpSocket, server, options, resolve) {
+const listen = (udpSocket, server, options, resolve) => {
 	udpSocket.on('message', (msg, rinfo) => {
 		udpSocket.close();
 		udpSocket = null;
+
 		if (msg && msg.length >= 2 && rinfo.address === server) {
 			// We got an answer where the source matches the queried server,
 			// we're online with high confidence
@@ -40,11 +35,11 @@ function listen(udpSocket, server, options, resolve) {
 			resolve(isReachable(options.hostnames));
 		}
 	});
-}
+};
 
-function send(udpSocket, server, options, resolve) {
+const send = (udpSocket, server, options, resolve) => {
 	// Craft a DNS query
-	var payload = getDefaultPayload();
+	const payload = getDefaultPayload();
 
 	udpSocket.send(payload, 0, payload.length, 53, server, () => {
 		setTimeout(() => {
@@ -52,21 +47,24 @@ function send(udpSocket, server, options, resolve) {
 			if (udpSocket) {
 				udpSocket.close();
 			}
+
 			resolve(false);
 		}, options.timeout);
 	});
-}
+};
 
-function getDefaultPayload() {
-	return new Buffer([
-		0x00, 0x00, /* Transaction ID */
-		0x01, 0x00, /* Standard Query */
-		0x00, 0x01, /* Questions: 1   */
-		0x00, 0x00, /* Answer RRs     */
-		0x00, 0x00, /* Authority RRs  */
-		0x00, 0x00, /* Additional RRs */
-		0x00,       /* Name:  <root>  */
-		0x00, 0x02, /* Type:  NS      */
-		0x00, 0x01  /* Class: IN      */
-	]);
-}
+module.exports = options => {
+	options = Object.assign({hostnames, timeout}, options);
+
+	const udpSocket = dgram.createSocket('udp4');
+
+	// Pick a random root server to query
+	const server = randomItem(roots);
+
+	const promise = new Promise(resolve => {
+		listen(udpSocket, server, options, resolve);
+		send(udpSocket, server, options, resolve);
+	});
+
+	return promise;
+};

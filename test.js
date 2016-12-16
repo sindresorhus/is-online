@@ -1,18 +1,10 @@
-'use strict';
-var test = require('ava');
-var isOnline = require('./');
+import test from 'ava';
+import m from './';
 
-test((t) => {
-	return isOnline()
-		.then((online) => { t.true(online); })
+test('main', async t => {
+	t.true(await m());
 });
 
-test((t) => {
-	return isOnline({ timeout: 500 })
-		.then((online) => { t.true(online); })
-});
-
-test(async (t) => {
-	var result = await isOnline();
-	t.true(result);
+test('timeout', async t => {
+	t.true(await m({timeout: 500}));
 });

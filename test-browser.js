@@ -1,8 +1,8 @@
-// need to test manually in devtools
+// Need to test manually in devtools
 // $ browserify test-browser.js > tmp.js
 'use strict';
-var isOnline = require('./browser');
+const isOnline = require('./browser');
 
-isOnline().then(function (online) {
+isOnline().then(online => {
 	console.log('online', online);
 });

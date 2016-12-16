@@ -12,12 +12,11 @@
   "contributors": [
     "silverwind <me@silverwind.io> (github.com/silverwind)"
   ],
-  "browser": "browser.js",
   "engines": {
     "node": ">=4"
   },
   "scripts": {
-    "test": "ava test.js"
+    "test": "xo && ava test.js"
   },
   "files": [
     "index.js",
@@ -46,12 +45,15 @@
   ],
   "dependencies": {
     "is-reachable": "^2.0.0",
-    "object-assign": "^4.1.0",
-    "pinkie-promise": "^2.0.1",
     "random-item": "^1.0.0",
     "root-hints": "^1.0.0"
   },
   "devDependencies": {
-    "ava": "^0.17.0"
+    "ava": "*",
+    "xo": "*"
+  },
+  "browser": "browser.js",
+  "xo": {
+    "esnext": true
   }
 }

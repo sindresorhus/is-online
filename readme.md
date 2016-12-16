@@ -2,7 +2,7 @@
 
 > Check if the internet connection is up
 
-Works in Node.js and the browser *(with [browserify](http://browserify.org))*.
+Works in Node.js and the browser *(with browserify/webpack)*.
 
 In the browser you have [`navigator.onLine`](https://developer.mozilla.org/en-US/docs/Web/API/NavigatorOnLine.onLine), but it's useless as it only tells you if there's a local connection, and not whether the internet is accessible.
 
@@ -17,56 +17,48 @@ $ npm install --save is-online
 ## Usage
 
 ```js
-var isOnline = require('is-online');
+const isOnline = require('is-online');
 
-isOnline().then((online) => { 
+isOnline().then(online => {
 	console.log(online);
 	//=> true
 });
 ```
 
 
-## Node API
+## API
 
 ### isOnline([options])
 
 #### options
 
-*Optional*  
-Type: `object`
+Type: `Object`
 
 ##### timeout
 
-Type: `number`
+Type: `number`<br>
+Default: `2000`
 
-Default: 2000
-
-Milliseconds to wait for a server to send response.
+Milliseconds to wait for a server to respond.
 
 ##### hostnames
 
-Type: `string`, `array`
-
-Default: ['www.google.com', 'www.cloudflare.com', 'www.baidu.com', 'www.yandex.ru']
+Type: `string` `Array`<br>
+Default: `['www.google.com', 'www.cloudflare.com', 'www.baidu.com', 'www.yandex.ru']`
 
 One or more hosts to check.
 
 
-## Browser API
-
-Same as above.
-
-
 ## How it works
 
-In node, we first contact one of the thirteen [root servers](https://www.iana.org/domains/root/servers) and ask them to direct us to the servers which host the `<root>` zone (Which they are themselves). If the server answers, we return an online status.
+In Node.js, we first contact one of the thirteen [root servers](https://www.iana.org/domains/root/servers) and ask them to direct us to the servers which host the `<root>` zone (Which they are themselves). If the server answers, we return an online status.
 
-If no satisfying answer is given within one second, we return an offline status. In the rare case where an firewall intercepts the packet and answers it on its behalf, a second check is run which tries to connect to a series of popular web sites on port 80. If one of these connects, we return online, otherwise offline status.
+If no satisfying answer is given within two seconds, we return an offline status. In the rare case where a firewall intercepts the packet and answers on its behalf, a second check is run which tries to connect to a series of popular web sites on port 80. If one of these connect, we return online, otherwise offline status.
 
-In the browser, a sophisticated check like in node is not possible because DNS and sockets are abstracted away. We use a check which requests an uncached `favicon.ico` on a series of popular websites. If one of this checks succeeds, we return online status. If all the requests fail, we return offline status.
+In the browser, a sophisticated check like in Node.js is not possible because DNS and sockets are abstracted away. We use a check which requests an uncached `favicon.ico` on a series of popular websites. If one of these checks succeed, we return online status. If all the requests fail, we return offline status.
 
 
-## Contributors
+## Maintainers
 
 - [silverwind](https://github.com/silverwind)
 
@@ -79,4 +71,4 @@ In the browser, a sophisticated check like in node is not possible because DNS a
 
 ## License
 
-MIT © [Sindre Sorhus](http://sindresorhus.com)
+MIT © [Sindre Sorhus](https://sindresorhus.com)

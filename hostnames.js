@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = [
 	'www.google.com',
 	'www.cloudflare.com',

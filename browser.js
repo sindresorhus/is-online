@@ -1,7 +1,5 @@
 'use strict';
-var isReachable = require('is-reachable');
-var hostnames = require('./hostnames');
+const isReachable = require('is-reachable');
+const hostnames = require('./hostnames');
 
-module.exports = function () {
-	return isReachable(hostnames);
-};
+module.exports = () => isReachable(hostnames);
