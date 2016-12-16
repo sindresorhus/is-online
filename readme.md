@@ -19,7 +19,7 @@ $ npm install --save is-online
 ```js
 var isOnline = require('is-online');
 
-isOnline(function(err, online) {
+isOnline().then((online) => { 
 	console.log(online);
 	//=> true
 });
@@ -28,7 +28,7 @@ isOnline(function(err, online) {
 
 ## Node API
 
-### isOnline([options], callback)
+### isOnline([options])
 
 #### options
 
@@ -51,17 +51,10 @@ Default: ['www.google.com', 'www.cloudflare.com', 'www.baidu.com', 'www.yandex.r
 
 One or more hosts to check.
 
-#### callback(error, online)
-
-*Required*  
-Type: `function`
-
-`error` is there only by Node.js convention and is always `null`.
-
 
 ## Browser API
 
-Same as above except the `callback` doesn't have an `error` parameter.
+Same as above.
 
 
 ## How it works

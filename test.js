@@ -2,20 +2,17 @@
 var test = require('ava');
 var isOnline = require('./');
 
-test(function (t) {
-	t.plan(2);
-
-	isOnline(function (err, online) {
-		t.assert(!err, err);
-		t.assert(online);
-	});
+test((t) => {
+	return isOnline()
+		.then((online) => { t.true(online); })
 });
 
-test(function (t) {
-	t.plan(2);
+test((t) => {
+	return isOnline({ timeout: 500 })
+		.then((online) => { t.true(online); })
+});
 
-	isOnline({ timeout: 500 }, function (err, online) {
-		t.assert(!err, err);
-		t.assert(online);
-	});
+test(async (t) => {
+	var result = await isOnline();
+	t.true(result);
 });
