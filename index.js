@@ -19,7 +19,9 @@ const getDefaultPayload = () => new Buffer([
 	0x00, 0x01  /* Class: IN      */
 ]);
 
-const listen = (udpSocket, server, options, resolve) => {
+let udpSocket;
+
+const listen = (server, options, resolve) => {
 	udpSocket.on('message', (msg, rinfo) => {
 		udpSocket.close();
 		udpSocket = null;
@@ -37,33 +39,32 @@ const listen = (udpSocket, server, options, resolve) => {
 	});
 };
 
-const send = (udpSocket, server, options, resolve) => {
+const send = (server, options, resolve) => {
 	// Craft a DNS query
 	const payload = getDefaultPayload();
 
 	udpSocket.send(payload, 0, payload.length, 53, server, () => {
 		setTimeout(() => {
 			// We ran into the timeout, we're offline with high confidence
+			resolve(false);
+
 			if (udpSocket) {
 				udpSocket.close();
 			}
-
-			resolve(false);
 		}, options.timeout);
 	});
 };
 
 module.exports = options => {
 	options = Object.assign({hostnames, timeout}, options);
-
-	const udpSocket = dgram.createSocket('udp4');
+	udpSocket = dgram.createSocket('udp4');
 
 	// Pick a random root server to query
 	const server = randomItem(roots);
 
 	const promise = new Promise(resolve => {
-		listen(udpSocket, server, options, resolve);
-		send(udpSocket, server, options, resolve);
+		listen(server, options, resolve);
+		send(server, options, resolve);
 	});
 
 	return promise;
