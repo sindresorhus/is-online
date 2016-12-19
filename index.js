@@ -19,13 +19,8 @@ const getDefaultPayload = () => new Buffer([
 	0x00, 0x01  /* Class: IN      */
 ]);
 
-let udpSocket;
-
-const listen = (server, options, resolve) => {
-	udpSocket.on('message', (msg, rinfo) => {
-		udpSocket.close();
-		udpSocket = null;
-
+const listen = (state, server, options, resolve) => {
+	state.socket.on('message', (msg, rinfo) => {
 		if (msg && msg.length >= 2 && rinfo.address === server) {
 			// We got an answer where the source matches the queried server,
 			// we're online with high confidence
@@ -36,20 +31,30 @@ const listen = (server, options, resolve) => {
 			// handshake succeeds, we're definitely online
 			resolve(isReachable(options.hostnames));
 		}
+
+		if (state.socket) {
+			state.socket.close();
+			state.socket = null;
+		}
+
+		if (state.timeout) {
+			clearTimeout(state.timeout);
+		}
 	});
 };
 
-const send = (server, options, resolve) => {
+const send = (state, server, options, resolve) => {
 	// Craft a DNS query
 	const payload = getDefaultPayload();
 
-	udpSocket.send(payload, 0, payload.length, 53, server, () => {
-		setTimeout(() => {
+	state.socket.send(payload, 0, payload.length, 53, server, () => {
+		state.timeout = setTimeout(() => {
 			// We ran into the timeout, we're offline with high confidence
 			resolve(false);
 
-			if (udpSocket) {
-				udpSocket.close();
+			if (state.socket) {
+				state.socket.close();
+				state.socket = null;
 			}
 		}, options.timeout);
 	});
@@ -57,14 +62,18 @@ const send = (server, options, resolve) => {
 
 module.exports = options => {
 	options = Object.assign({hostnames, timeout}, options);
-	udpSocket = dgram.createSocket('udp4');
+
+	const state = {
+		socket: dgram.createSocket('udp4'),
+		timeout: null
+	};
 
 	// Pick a random root server to query
 	const server = randomItem(roots);
 
 	const promise = new Promise(resolve => {
-		listen(server, options, resolve);
-		send(server, options, resolve);
+		listen(state, server, options, resolve);
+		send(state, server, options, resolve);
 	});
 
 	return promise;

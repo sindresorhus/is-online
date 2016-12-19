@@ -8,3 +8,7 @@ test('main', async t => {
 test('timeout', async t => {
 	t.true(await m({timeout: 500}));
 });
+
+test('impossible timeout', async t => {
+	t.false(await m({timeout: 1}));
+});
