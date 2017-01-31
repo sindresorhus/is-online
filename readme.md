@@ -39,7 +39,7 @@ Type: `Object`
 Type: `number`<br>
 Default: `2000`
 
-Milliseconds to wait for a server to respond.
+Milliseconds to wait for a server to respond. This option is only supported in Node.js.
 
 ##### hostnames
 
