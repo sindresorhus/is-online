@@ -46,8 +46,7 @@ Milliseconds to wait for a server to respond. This option is only supported in N
 Type: `string` `Array`<br>
 Default: `['www.google.com', 'www.cloudflare.com', 'www.baidu.com', 'www.yandex.ru']`
 
-One or more hosts to check.
-
+One or more hosts to check. Can either be a just a `hostname`, a `hostname:port` combination or a full URL like `https://hostname`.
 
 ## How it works
 
