@@ -44,9 +44,9 @@
     "accessible"
   ],
   "dependencies": {
-    "is-reachable": "^2.0.0",
+    "is-reachable": "^2.2.0",
     "random-item": "^1.0.0",
-    "root-hints": "^1.0.0"
+    "root-hints": "^1.0.12"
   },
   "devDependencies": {
     "ava": "*",
