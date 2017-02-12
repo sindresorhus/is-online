@@ -44,9 +44,10 @@
     "accessible"
   ],
   "dependencies": {
-    "is-reachable": "^2.2.0",
-    "random-item": "^1.0.0",
-    "root-hints": "^1.0.12"
+    "got": "^6.7.1",
+    "p-any": "^1.0.0",
+    "p-timeout": "^1.0.0",
+    "public-ip": "^2.3.0"
   },
   "devDependencies": {
     "ava": "*",

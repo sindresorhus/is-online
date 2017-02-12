@@ -1,80 +1,30 @@
 'use strict';
-const dgram = require('dgram');
-const roots = require('root-hints')('A');
-const isReachable = require('is-reachable');
-const randomItem = require('random-item');
-const hostnames = require('./hostnames');
 
-const timeout = 2000;
+const got = require('got');
+const publicIp = require('public-ip');
+const pAny = require('p-any');
+const pTimeout = require('p-timeout');
 
-const getDefaultPayload = () => new Buffer([
-	0x00, 0x00, /* Transaction ID */
-	0x01, 0x00, /* Standard Query */
-	0x00, 0x01, /* Questions: 1   */
-	0x00, 0x00, /* Answer RRs     */
-	0x00, 0x00, /* Authority RRs  */
-	0x00, 0x00, /* Additional RRs */
-	0x00,       /* Name:  <root>  */
-	0x00, 0x02, /* Type:  NS      */
-	0x00, 0x01  /* Class: IN      */
-]);
-
-const listen = (state, server, options, resolve) => {
-	state.socket.on('message', (msg, rinfo) => {
-		if (msg && msg.length >= 2 && rinfo.address === server) {
-			// We got an answer where the source matches the queried server,
-			// we're online with high confidence
-			resolve(true);
-		} else {
-			// We got an answer, but it appears to not come from the queried
-			// server. Try connecting to our hostnames on port 80 and if one
-			// handshake succeeds, we're definitely online
-			resolve(isReachable(options.hostnames));
-		}
-
-		if (state.socket) {
-			state.socket.close();
-			state.socket = null;
-		}
-
-		if (state.timeout) {
-			clearTimeout(state.timeout);
-		}
-	});
+const defaults = {
+	timeout: 5000,
+	version: 'v4'
 };
 
-const send = (state, server, options, resolve) => {
-	// Craft a DNS query
-	const payload = getDefaultPayload();
-
-	state.socket.send(payload, 0, payload.length, 53, server, () => {
-		state.timeout = setTimeout(() => {
-			// We ran into the timeout, we're offline with high confidence
-			resolve(false);
-
-			if (state.socket) {
-				state.socket.close();
-				state.socket = null;
-			}
-		}, options.timeout);
-	});
-};
+function appleCheck(options) {
+	return got('http://captive.apple.com/hotspot-detect.html', {
+		family: options.version === 'v4' ? 4 : 6,
+		headers: {'User-Agent': 'CaptiveNetworkSupport/1.0 wispr'}
+	}).then(res => /Success/.test(res.body || '') || Promise.reject());
+}
 
 module.exports = options => {
-	options = Object.assign({hostnames, timeout}, options);
+	options = Object.assign({}, defaults, options);
 
-	const state = {
-		socket: dgram.createSocket('udp4'),
-		timeout: null
-	};
+	const p = pAny([
+		publicIp[options.version]().then(() => true),
+		publicIp[options.version]({https: true}).then(() => true),
+		appleCheck(options)
+	]);
 
-	// Pick a random root server to query
-	const server = randomItem(roots);
-
-	const promise = new Promise(resolve => {
-		listen(state, server, options, resolve);
-		send(state, server, options, resolve);
-	});
-
-	return promise;
+	return pTimeout(p, options.timeout).catch(() => false);
 };
