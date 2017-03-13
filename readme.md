@@ -44,9 +44,11 @@ Milliseconds to wait for a server to respond.
 ##### version
 
 Type: `string`<br>
+Values: `v4` `v6`<br>
 Default: `v4`
 
-Internet Protocol version to use. This is an advanced option that is usually not neccessary to be set, but it can prove useful to specifically assert IPv6 connectivity. Valid values are either `'v4'` or `'v6'`. Default: `'v4'`.
+Internet Protocol version to use. This is an advanced option that is usually not neccessary to be set, but it can prove useful to specifically assert IPv6 connectivity.
+
 
 ## How it works
 
@@ -56,7 +58,8 @@ The following checks are run in parallel:
 - Query `myip.opendns.com` on OpenDNS (Node.js only)
 - Retrieve Apple's Captive Portal test page (Node.js only)
 
-When the first check suceeds, the returned Promise is resolved to `true`.
+When the first check succeeds, the returned Promise is resolved to `true`.
+
 
 ## Maintainers
 
