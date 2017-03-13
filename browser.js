@@ -1,8 +1,13 @@
 'use strict';
-const isReachable = require('is-reachable');
-const hostnames = require('./hostnames');
+
+const publicIp = require('public-ip');
+
+const defaults = {
+	timeout: 5000,
+	version: 'v4'
+};
 
 module.exports = options => {
-	options = options || {};
-	return isReachable(options.hostnames || hostnames);
+	options = Object.assign({}, defaults, options);
+	return publicIp[options.version](options).then(() => true).catch(() => false);
 };

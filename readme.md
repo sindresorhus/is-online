@@ -37,24 +37,28 @@ Type: `Object`
 ##### timeout
 
 Type: `number`<br>
-Default: `2000`
+Default: `5000`
 
-Milliseconds to wait for a server to respond. This option is only supported in Node.js.
+Milliseconds to wait for a server to respond.
 
-##### hostnames
+##### version
 
-Type: `string` `Array`<br>
-Default: `['www.google.com', 'www.cloudflare.com', 'www.baidu.com', 'www.yandex.ru']`
+Type: `string`<br>
+Values: `v4` `v6`<br>
+Default: `v4`
 
-One or more hosts to check. Can either be a just a `hostname`, a `hostname:port` combination or a full URL like `https://hostname`.
+Internet Protocol version to use. This is an advanced option that is usually not neccessary to be set, but it can prove useful to specifically assert IPv6 connectivity.
+
 
 ## How it works
 
-In Node.js, we first contact one of the thirteen [root servers](https://www.iana.org/domains/root/servers) and ask them to direct us to the servers which host the `<root>` zone (Which they are themselves). If the server answers, we return an online status.
+The following checks are run in parallel:
 
-If no satisfying answer is given within two seconds, we return an offline status. In the rare case where a firewall intercepts the packet and answers on its behalf, a second check is run which tries to connect to a series of popular web sites on port 80. If one of these connect, we return online, otherwise offline status.
+- Retrieve [icanhazip.com](https://github.com/major/icanhaz) via HTTPS
+- Query `myip.opendns.com` on OpenDNS (Node.js only)
+- Retrieve Apple's Captive Portal test page (Node.js only)
 
-In the browser, a sophisticated check like in Node.js is not possible because DNS and sockets are abstracted away. We use a check which requests an uncached `favicon.ico` on a series of popular websites. If one of these checks succeed, we return online status. If all the requests fail, we return offline status.
+When the first check succeeds, the returned Promise is resolved to `true`.
 
 
 ## Maintainers

@@ -1,5 +1,5 @@
 // Need to test manually in devtools
-// $ browserify test-browser.js > tmp.js
+// $ browserify test-browser.js | pbcopy
 'use strict';
 const isOnline = require('./browser');
 
