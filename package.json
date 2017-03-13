@@ -1,6 +1,6 @@
 {
   "name": "is-online",
-  "version": "6.1.0",
+  "version": "7.0.0",
   "description": "Check if the internet connection is up",
   "license": "MIT",
   "repository": "sindresorhus/is-online",
