@@ -50,8 +50,8 @@ module.exports = options => {
 			return true;
 		}),
 		promises[2].then(() => {
+			promises[0].cancel();
 			promises[1].cancel();
-			promises[2].cancel();
 			return true;
 		})
 	]);
