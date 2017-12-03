@@ -42,17 +42,14 @@ module.exports = options => {
 		promises[0].then(() => {
 			promises[1].cancel();
 			promises[2].cancel();
-			return true;
 		}),
 		promises[1].then(() => {
 			promises[0].cancel();
 			promises[2].cancel();
-			return true;
 		}),
 		promises[2].then(() => {
 			promises[0].cancel();
 			promises[1].cancel();
-			return true;
 		})
 	]);
 
