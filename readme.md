@@ -25,6 +25,19 @@ isOnline().then(online => {
 });
 ```
 
+# Practical example
+
+```js
+//checks for internet connection
+isOnline().then(online => {
+    if(!online){
+        console.log("There is no Internet Connection");
+        process.exit();
+    }
+    
+    /*do some stuff with Internet*/
+});
+```
 
 ## API
 
