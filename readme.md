@@ -2,7 +2,7 @@
 
 > Check if the internet connection is up
 
-Works in Node.js and the browser *(with browserify/webpack)*.
+Works in Node.js and the browser *(with a bundler)*.
 
 In the browser you have [`navigator.onLine`](https://developer.mozilla.org/en-US/docs/Web/API/NavigatorOnLine.onLine), but it's useless as it only tells you if there's a local connection, and not whether the internet is accessible.
 
@@ -10,7 +10,7 @@ In the browser you have [`navigator.onLine`](https://developer.mozilla.org/en-US
 ## Install
 
 ```
-$ npm install --save is-online
+$ npm install is-online
 ```
 
 
@@ -19,10 +19,10 @@ $ npm install --save is-online
 ```js
 const isOnline = require('is-online');
 
-isOnline().then(online => {
-	console.log(online);
+(async () => {
+	console.log(await isOnline());
 	//=> true
-});
+})();
 ```
 
 
@@ -55,8 +55,8 @@ Internet Protocol version to use. This is an advanced option that is usually not
 The following checks are run in parallel:
 
 - Retrieve [icanhazip.com](https://github.com/major/icanhaz) via HTTPS
-- Query `myip.opendns.com` on OpenDNS (Node.js only)
-- Retrieve Apple's Captive Portal test page (Node.js only)
+- Query `myip.opendns.com` on OpenDNS *(Node.js only)*
+- Retrieve Apple's Captive Portal test page *(Node.js only)*
 
 When the first check succeeds, the returned Promise is resolved to `true`.
 

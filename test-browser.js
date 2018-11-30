@@ -1,8 +1,8 @@
-// Need to test manually in devtools
+// Need to test manually in DevTools
 // $ browserify test-browser.js | pbcopy
 'use strict';
 const isOnline = require('./browser');
 
-isOnline().then(online => {
-	console.log('online', online);
-});
+(async () => {
+	console.log('is online:', await isOnline());
+})();

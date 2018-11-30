@@ -1,13 +1,17 @@
 'use strict';
-
 const publicIp = require('public-ip');
 
-const defaults = {
-	timeout: 5000,
-	version: 'v4'
-};
+module.exports = async options => {
+	options = {
+		timeout: 5000,
+		version: 'v4',
+		...options
+	};
 
-module.exports = options => {
-	options = Object.assign({}, defaults, options);
-	return publicIp[options.version](options).then(() => true).catch(() => false);
+	try {
+		await publicIp[options.version](options);
+		return true;
+	} catch (_) {
+		return false;
+	}
 };

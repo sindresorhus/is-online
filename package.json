@@ -1,60 +1,57 @@
 {
-  "name": "is-online",
-  "version": "7.0.0",
-  "description": "Check if the internet connection is up",
-  "license": "MIT",
-  "repository": "sindresorhus/is-online",
-  "author": {
-    "name": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com"
-  },
-  "contributors": [
-    "silverwind <me@silverwind.io> (github.com/silverwind)"
-  ],
-  "engines": {
-    "node": ">=4"
-  },
-  "scripts": {
-    "test": "xo && ava test.js"
-  },
-  "files": [
-    "index.js",
-    "browser.js",
-    "hostnames.js"
-  ],
-  "keywords": [
-    "browser",
-    "online",
-    "offline",
-    "is-online",
-    "network",
-    "connected",
-    "connectivity",
-    "internet",
-    "is",
-    "has",
-    "detect",
-    "hostname",
-    "hostnames",
-    "dns",
-    "socket",
-    "reachable",
-    "reachability",
-    "accessible"
-  ],
-  "dependencies": {
-    "got": "^8.0.1",
-    "p-any": "^1.1.0",
-    "p-timeout": "^2.0.1",
-    "public-ip": "^2.4.0"
-  },
-  "devDependencies": {
-    "ava": "*",
-    "xo": "*"
-  },
-  "browser": "browser.js",
-  "xo": {
-    "esnext": true
-  }
+	"name": "is-online",
+	"version": "7.0.0",
+	"description": "Check if the internet connection is up",
+	"license": "MIT",
+	"repository": "sindresorhus/is-online",
+	"author": {
+		"name": "Sindre Sorhus",
+		"email": "sindresorhus@gmail.com",
+		"url": "sindresorhus.com"
+	},
+	"contributors": [
+		"silverwind <me@silverwind.io> (github.com/silverwind)"
+	],
+	"engines": {
+		"node": ">=8"
+	},
+	"scripts": {
+		"test": "xo && ava test.js"
+	},
+	"files": [
+		"index.js",
+		"browser.js",
+		"hostnames.js"
+	],
+	"keywords": [
+		"browser",
+		"online",
+		"offline",
+		"is-online",
+		"network",
+		"connected",
+		"connectivity",
+		"internet",
+		"is",
+		"has",
+		"detect",
+		"hostname",
+		"hostnames",
+		"dns",
+		"socket",
+		"reachable",
+		"reachability",
+		"accessible"
+	],
+	"dependencies": {
+		"got": "^9.3.2",
+		"p-any": "^1.1.0",
+		"p-timeout": "^2.0.1",
+		"public-ip": "^2.4.0"
+	},
+	"devDependencies": {
+		"ava": "^0.25.0",
+		"xo": "^0.23.0"
+	},
+	"browser": "browser.js"
 }
