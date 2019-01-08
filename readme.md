@@ -47,7 +47,7 @@ Type: `string`<br>
 Values: `v4` `v6`<br>
 Default: `v4`
 
-Internet Protocol version to use. This is an advanced option that is usually not neccessary to be set, but it can prove useful to specifically assert IPv6 connectivity.
+Internet Protocol version to use. This is an advanced option that is usually not necessary to be set, but it can prove useful to specifically assert IPv6 connectivity.
 
 
 ## How it works
