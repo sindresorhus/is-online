@@ -16,11 +16,14 @@ const appleCheck = async options => {
 };
 
 module.exports = options => {
-	options = {
-		timeout: 5000,
-		version: 'v4',
-		...options
-	};
+	// merge options
+	options = Object.assign(
+		{
+			timeout: 5000,
+			version: 'v4'
+		},
+		options || {},
+	);
 
 	const promise = pAny([
 		(async () => {
