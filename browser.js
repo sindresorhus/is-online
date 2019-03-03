@@ -1,7 +1,7 @@
 'use strict';
 const publicIp = require('public-ip');
 
-module.exports = async options => {
+const isOnline = async options => {
 	options = {
 		timeout: 5000,
 		version: 'v4',
@@ -15,3 +15,6 @@ module.exports = async options => {
 		return false;
 	}
 };
+
+module.exports = isOnline;
+module.exports.default = isOnline;

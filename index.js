@@ -15,7 +15,7 @@ const appleCheck = async options => {
 	return /Success/.test(body || '') || Promise.reject();
 };
 
-module.exports = options => {
+const isOnline = options => {
 	options = {
 		timeout: 5000,
 		version: 'v4',
@@ -36,3 +36,6 @@ module.exports = options => {
 
 	return pTimeout(promise, options.timeout).catch(() => false);
 };
+
+module.exports = isOnline;
+module.exports.default = isOnline;
