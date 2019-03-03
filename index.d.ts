@@ -4,14 +4,14 @@ export interface Options {
 	 *
 	 * @default 5000
 	 */
-	timeout?: number;
+	readonly timeout?: number;
 
 	/**
 	 * Internet Protocol version to use. This is an advanced option that is usually not necessary to be set, but it can prove useful to specifically assert IPv6 connectivity.
 	 *
 	 * @default 'v4'
 	 */
-	version?: 'v4' | 'v6';
+	readonly version?: 'v4' | 'v6';
 }
 
 /**
