@@ -1,5 +1,5 @@
-import {expectType} from 'tsd-check';
-import isOnline from '.';
+import {expectType} from 'tsd';
+import isOnline = require('.');
 
 expectType<Promise<boolean>>(isOnline());
 expectType<Promise<boolean>>(isOnline({timeout: 10}));
