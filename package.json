@@ -16,7 +16,7 @@
 		"node": ">=8"
 	},
 	"scripts": {
-		"test": "xo && ava test.js && tsd-check"
+		"test": "xo && ava test.js && tsd"
 	},
 	"files": [
 		"index.js",
@@ -44,14 +44,14 @@
 		"accessible"
 	],
 	"dependencies": {
-		"got": "^9.3.2",
-		"p-any": "^1.1.0",
-		"p-timeout": "^2.0.1",
+		"got": "^9.6.0",
+		"p-any": "^2.0.0",
+		"p-timeout": "^3.0.0",
 		"public-ip": "^3.0.0"
 	},
 	"devDependencies": {
-		"ava": "^1.2.1",
-		"tsd-check": "^0.3.0",
+		"ava": "^1.4.1",
+		"tsd": "^0.7.2",
 		"xo": "^0.24.0"
 	},
 	"browser": "browser.js"

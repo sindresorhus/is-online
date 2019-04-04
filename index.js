@@ -38,4 +38,5 @@ const isOnline = options => {
 };
 
 module.exports = isOnline;
+// TODO: Remove this for the next major release
 module.exports.default = isOnline;
