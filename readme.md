@@ -28,11 +28,11 @@ const isOnline = require('is-online');
 
 ## API
 
-### isOnline([options])
+### isOnline(options?)
 
 #### options
 
-Type: `Object`
+Type: `object`
 
 ##### timeout
 
@@ -44,8 +44,8 @@ Milliseconds to wait for a server to respond.
 ##### version
 
 Type: `string`<br>
-Values: `v4` `v6`<br>
-Default: `v4`
+Values: `'v4'` `'v6'`<br>
+Default: `'v4'`
 
 Internet Protocol version to use. This is an advanced option that is usually not necessary to be set, but it can prove useful to specifically assert IPv6 connectivity.
 
@@ -61,8 +61,14 @@ The following checks are run in parallel:
 When the first check succeeds, the returned Promise is resolved to `true`.
 
 
+## Proxy support
+
+To make it work through proxies, you need to set up [`global-agent`](https://github.com/gajus/global-agent).
+
+
 ## Maintainers
 
+- [Sindre Sorhus](https://github.com/sindresorhus)
 - [silverwind](https://github.com/silverwind)
 
 
@@ -70,8 +76,3 @@ When the first check succeeds, the returned Promise is resolved to `true`.
 
 - [is-online-cli](https://github.com/sindresorhus/is-online-cli) - CLI for this module
 - [is-reachable](https://github.com/sindresorhus/is-reachable) - Check if servers are reachable
-
-
-## License
-
-MIT © [Sindre Sorhus](https://sindresorhus.com)
