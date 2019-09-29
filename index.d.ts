@@ -13,6 +13,13 @@ declare namespace isOnline {
 		@default 'v4'
 		*/
 		readonly version?: 'v4' | 'v6';
+
+		/**
+		URL to check if the connection is established
+
+		@url 'http://captive.apple.com/hotspot-detect.html'
+		*/
+		readonly url?: string;
 	}
 }
 

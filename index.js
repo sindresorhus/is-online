@@ -5,7 +5,7 @@ const pAny = require('p-any');
 const pTimeout = require('p-timeout');
 
 const appleCheck = async options => {
-	const {body} = await got('http://captive.apple.com/hotspot-detect.html', {
+	const {body} = await got(options.url, {
 		family: options.version === 'v4' ? 4 : 6,
 		headers: {
 			'user-agent': 'CaptiveNetworkSupport/1.0 wispr'
@@ -19,6 +19,7 @@ const isOnline = options => {
 	options = {
 		timeout: 5000,
 		version: 'v4',
+		url: 'http://captive.apple.com/hotspot-detect.html',
 		...options
 	};
 

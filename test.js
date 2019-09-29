@@ -13,6 +13,10 @@ test('v4 with impossible timeout', async t => {
 	t.false(await isOnline({timeout: 1}));
 });
 
+test('check url', async t => {
+	t.true(await isOnline({url: 'https://google.com'}));
+});
+
 if (!process.env.CI) {
 	test('v6', async t => {
 		t.true(await isOnline({version: 'v6'}));

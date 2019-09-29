@@ -49,6 +49,13 @@ Default: `'v4'`
 
 Internet Protocol version to use. This is an advanced option that is usually not necessary to be set, but it can prove useful to specifically assert IPv6 connectivity.
 
+##### url
+
+Type: `string`<br>
+Default: `http://captive.apple.com/hotspot-detect.html`
+
+URL to check if the connection is established
+
 
 ## How it works
 
