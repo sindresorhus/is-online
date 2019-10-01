@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
+import {expectType} from 'tsd';
 import isOnline = require('.');
 
 expectType<Promise<boolean>>(isOnline());
