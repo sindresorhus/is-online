@@ -4,6 +4,7 @@
 	"description": "Check if the internet connection is up",
 	"license": "MIT",
 	"repository": "sindresorhus/is-online",
+	"funding": "https://github.com/sponsors/sindresorhus",
 	"author": {
 		"name": "Sindre Sorhus",
 		"email": "sindresorhus@gmail.com",
@@ -41,7 +42,9 @@
 		"socket",
 		"reachable",
 		"reachability",
-		"accessible"
+		"accessible",
+		"no",
+		"disconnected"
 	],
 	"dependencies": {
 		"got": "^9.6.0",
@@ -50,9 +53,9 @@
 		"public-ip": "^3.0.0"
 	},
 	"devDependencies": {
-		"ava": "^1.4.1",
-		"tsd": "^0.7.2",
-		"xo": "^0.24.0"
+		"ava": "^2.4.0",
+		"tsd": "^0.11.0",
+		"xo": "^0.25.3"
 	},
 	"browser": "browser.js"
 }

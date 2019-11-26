@@ -36,15 +36,15 @@ Type: `object`
 
 ##### timeout
 
-Type: `number`<br>
+Type: `number`\
 Default: `5000`
 
 Milliseconds to wait for a server to respond.
 
 ##### version
 
-Type: `string`<br>
-Values: `'v4'` `'v6'`<br>
+Type: `string`\
+Values: `'v4'` `'v6'`\
 Default: `'v4'`
 
 Internet Protocol version to use. This is an advanced option that is usually not necessary to be set, but it can prove useful to specifically assert IPv6 connectivity.
