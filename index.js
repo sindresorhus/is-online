@@ -6,6 +6,7 @@ const pTimeout = require('p-timeout');
 
 const appleCheck = async options => {
 	const {body} = await got('http://captive.apple.com/hotspot-detect.html', {
+		timeout: options.timeout,
 		family: options.version === 'v4' ? 4 : 6,
 		headers: {
 			'user-agent': 'CaptiveNetworkSupport/1.0 wispr'
@@ -24,11 +25,11 @@ const isOnline = options => {
 
 	const promise = pAny([
 		(async () => {
-			await publicIp[options.version]();
+			await publicIp[options.version](options);
 			return true;
 		})(),
 		(async () => {
-			await publicIp[options.version]({https: true});
+			await publicIp[options.version]({...options, https: true});
 			return true;
 		})(),
 		appleCheck(options)
