@@ -27,13 +27,13 @@ const isOnline = options => {
 
 	const promise = pAny([
 		(async () => {
-			let query = publicIp[options.version](options);
+			const query = publicIp[options.version](options);
 			queries.push(query);
 			await query;
 			return true;
 		})(),
 		(async () => {
-			let query = publicIp[options.version]({...options, onlyHttps: true});
+			const query = publicIp[options.version]({...options, onlyHttps: true});
 			queries.push(query);
 			await query;
 			return true;
