@@ -23,19 +23,30 @@ const isOnline = options => {
 		...options
 	};
 
+	const queries = [];
+
 	const promise = pAny([
 		(async () => {
-			await publicIp[options.version](options);
+			let query = publicIp[options.version](options);
+			queries.push(query);
+			await query;
 			return true;
 		})(),
 		(async () => {
-			await publicIp[options.version]({...options, https: true});
+			let query = publicIp[options.version]({...options, onlyHttps: true});
+			queries.push(query);
+			await query;
 			return true;
 		})(),
 		appleCheck(options)
 	]);
 
-	return pTimeout(promise, options.timeout).catch(() => false);
+	return pTimeout(promise, options.timeout).catch(() => {
+		queries.forEach(query => {
+			query.cancel();
+		});
+		return false;
+	});
 };
 
 module.exports = isOnline;
