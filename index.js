@@ -4,8 +4,8 @@ const publicIp = require('public-ip');
 const pAny = require('p-any');
 const pTimeout = require('p-timeout');
 
-const appleCheck = async options => {
-	const {body} = await got('http://captive.apple.com/hotspot-detect.html', {
+const appleCheck = options => {
+	const gotPromise = got('http://captive.apple.com/hotspot-detect.html', {
 		timeout: options.timeout,
 		family: options.version === 'v4' ? 4 : 6,
 		headers: {
@@ -13,7 +13,22 @@ const appleCheck = async options => {
 		}
 	});
 
-	return /Success/.test(body || '') || Promise.reject();
+	const promise = (async () => {
+		try {
+			const {body} = await gotPromise;
+			if (!/Success/.test(body || '')) {
+				throw new Error('apple check is not success');
+			}
+		} catch (error) {
+			if (!(error instanceof got.CancelError)) {
+				throw error;
+			}
+		}
+	})();
+
+	promise.cancel = gotPromise.cancel;
+
+	return promise;
 };
 
 const isOnline = options => {
@@ -38,7 +53,12 @@ const isOnline = options => {
 			await query;
 			return true;
 		})(),
-		appleCheck(options)
+		(async () => {
+			const query = appleCheck(options);
+			queries.push(query);
+			await query;
+			return true;
+		})()
 	]);
 
 	return pTimeout(promise, options.timeout).catch(() => {
