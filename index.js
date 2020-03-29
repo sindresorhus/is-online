@@ -62,9 +62,10 @@ const isOnline = options => {
 	]);
 
 	return pTimeout(promise, options.timeout).catch(() => {
-		queries.forEach(query => {
+		for (const query of queries) {
 			query.cancel();
-		});
+		}
+
 		return false;
 	});
 };
