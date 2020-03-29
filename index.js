@@ -17,7 +17,7 @@ const appleCheck = options => {
 		try {
 			const {body} = await gotPromise;
 			if (!/Success/.test(body || '')) {
-				throw new Error('apple check is not success');
+				throw new Error('Apple check failed');
 			}
 		} catch (error) {
 			if (!(error instanceof got.CancelError)) {
