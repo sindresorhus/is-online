@@ -16,7 +16,7 @@ const appleCheck = options => {
 	const promise = (async () => {
 		try {
 			const {body} = await gotPromise;
-			if (!/Success/.test(body || '')) {
+			if (body && body.includes('Success')) {
 				throw new Error('Apple check failed');
 			}
 		} catch (error) {
