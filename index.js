@@ -4,15 +4,31 @@ const publicIp = require('public-ip');
 const pAny = require('p-any');
 const pTimeout = require('p-timeout');
 
-const appleCheck = async options => {
-	const {body} = await got('http://captive.apple.com/hotspot-detect.html', {
+const appleCheck = options => {
+	const gotPromise = got('http://captive.apple.com/hotspot-detect.html', {
+		timeout: options.timeout,
 		family: options.version === 'v4' ? 4 : 6,
 		headers: {
 			'user-agent': 'CaptiveNetworkSupport/1.0 wispr'
 		}
 	});
 
-	return /Success/.test(body || '') || Promise.reject();
+	const promise = (async () => {
+		try {
+			const {body} = await gotPromise;
+			if (body && body.includes('Success')) {
+				throw new Error('Apple check failed');
+			}
+		} catch (error) {
+			if (!(error instanceof got.CancelError)) {
+				throw error;
+			}
+		}
+	})();
+
+	promise.cancel = gotPromise.cancel;
+
+	return promise;
 };
 
 const isOnline = options => {
@@ -22,19 +38,36 @@ const isOnline = options => {
 		...options
 	};
 
+	const queries = [];
+
 	const promise = pAny([
 		(async () => {
-			await publicIp[options.version]();
+			const query = publicIp[options.version](options);
+			queries.push(query);
+			await query;
 			return true;
 		})(),
 		(async () => {
-			await publicIp[options.version]({https: true});
+			const query = publicIp[options.version]({...options, onlyHttps: true});
+			queries.push(query);
+			await query;
 			return true;
 		})(),
-		appleCheck(options)
+		(async () => {
+			const query = appleCheck(options);
+			queries.push(query);
+			await query;
+			return true;
+		})()
 	]);
 
-	return pTimeout(promise, options.timeout).catch(() => false);
+	return pTimeout(promise, options.timeout).catch(() => {
+		for (const query of queries) {
+			query.cancel();
+		}
+
+		return false;
+	});
 };
 
 module.exports = isOnline;
