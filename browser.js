@@ -7,6 +7,10 @@ const isOnline = async options => {
 		version: 'v4',
 		...options
 	};
+	
+	if (navigator && navigator.onLine === false) {
+		return false;
+	}
 
 	try {
 		await publicIp[options.version](options);
