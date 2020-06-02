@@ -5,7 +5,7 @@ const pAny = require('p-any');
 const pTimeout = require('p-timeout');
 
 const appleCheck = options => {
-	const gotPromise = got('http://captive.apple.com/hotspot-detect.html', {
+	const gotPromise = got('https://captive.apple.com/hotspot-detect.html', {
 		timeout: options.timeout,
 		family: options.version === 'v4' ? 4 : 6,
 		headers: {
