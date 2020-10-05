@@ -45,7 +45,7 @@ const isOnline = options => {
 	if (flat(Object.values(os.networkInterfaces())).every(({internal}) => internal)) {
 		return false;
 	}
-	
+
 	const queries = [];
 
 	const promise = pAny([
