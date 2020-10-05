@@ -42,7 +42,7 @@ const isOnline = options => {
 		...options
 	};
 
-	if (flat(Object.values(os.networkInterfaces())).some(({internal}) => !internal)) {
+	if (flat(Object.values(os.networkInterfaces())).every(({internal}) => internal)) {
 		return false;
 	}
 	
