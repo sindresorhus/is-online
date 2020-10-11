@@ -1,8 +1,12 @@
 'use strict';
+const os = require('os');
 const got = require('got');
 const publicIp = require('public-ip');
 const pAny = require('p-any');
 const pTimeout = require('p-timeout');
+
+// Use Array#flat when targeting Node.js 12
+const flat = array => [].concat(...array);
 
 const appleCheck = options => {
 	const gotPromise = got('https://captive.apple.com/hotspot-detect.html', {
@@ -37,6 +41,10 @@ const isOnline = options => {
 		version: 'v4',
 		...options
 	};
+
+	if (flat(Object.values(os.networkInterfaces())).every(({internal}) => internal)) {
+		return false;
+	}
 
 	const queries = [];
 
