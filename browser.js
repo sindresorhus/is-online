@@ -1,3 +1,4 @@
+/* eslint-env browser */
 'use strict';
 const publicIp = require('public-ip');
 
@@ -8,7 +9,11 @@ const isOnline = async options => {
 		...options
 	};
 
-	const publicIpFunctionName = options.ipVersion === 4 ? 'v4' : 'v6';
+	if (navigator && navigator.onLine === false) {
+		return false;
+	}
+
+  const publicIpFunctionName = options.ipVersion === 4 ? 'v4' : 'v6';
 
 	try {
 		await publicIp[publicIpFunctionName](options);

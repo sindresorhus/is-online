@@ -1,11 +1,15 @@
 'use strict';
+const os = require('os');
 const got = require('got');
 const publicIp = require('public-ip');
 const pAny = require('p-any');
 const pTimeout = require('p-timeout');
 
+// Use Array#flat when targeting Node.js 12
+const flat = array => [].concat(...array);
+
 const appleCheck = options => {
-	const gotPromise = got('http://captive.apple.com/hotspot-detect.html', {
+	const gotPromise = got('https://captive.apple.com/hotspot-detect.html', {
 		timeout: options.timeout,
 		family: options.ipVersion,
 		headers: {
@@ -16,7 +20,7 @@ const appleCheck = options => {
 	const promise = (async () => {
 		try {
 			const {body} = await gotPromise;
-			if (body && body.includes('Success')) {
+			if (!body || !body.includes('Success')) {
 				throw new Error('Apple check failed');
 			}
 		} catch (error) {
@@ -37,6 +41,10 @@ const isOnline = options => {
 		ipVersion: 4,
 		...options
 	};
+
+	if (flat(Object.values(os.networkInterfaces())).every(({internal}) => internal)) {
+		return Promise.resolve(false);
+	}
 
 	if (![4, 6].includes(options.ipVersion)) {
 		throw new TypeError('`ipVersion` must be 4 or 6');
