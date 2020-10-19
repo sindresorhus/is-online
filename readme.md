@@ -41,11 +41,11 @@ Default: `5000`
 
 Milliseconds to wait for a server to respond.
 
-##### version
+##### ipVersion
 
-Type: `string`\
-Values: `'v4'` `'v6'`\
-Default: `'v4'`
+Type: `number`\
+Values: `4` `6`\
+Default: `4`
 
 Internet Protocol version to use. This is an advanced option that is usually not necessary to be set, but it can prove useful to specifically assert IPv6 connectivity.
 

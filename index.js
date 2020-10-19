@@ -7,7 +7,7 @@ const pTimeout = require('p-timeout');
 const appleCheck = options => {
 	const gotPromise = got('http://captive.apple.com/hotspot-detect.html', {
 		timeout: options.timeout,
-		family: options.version === 'v4' ? 4 : 6,
+		family: options.ipVersion,
 		headers: {
 			'user-agent': 'CaptiveNetworkSupport/1.0 wispr'
 		}
@@ -34,21 +34,27 @@ const appleCheck = options => {
 const isOnline = options => {
 	options = {
 		timeout: 5000,
-		version: 'v4',
+		ipVersion: 4,
 		...options
 	};
+
+	if (![4, 6].includes(options.ipVersion)) {
+		throw new TypeError('`ipVersion` must be 4 or 6');
+	}
+
+	const publicIpFunctionName = options.ipVersion === 4 ? 'v4' : 'v6';
 
 	const queries = [];
 
 	const promise = pAny([
 		(async () => {
-			const query = publicIp[options.version](options);
+			const query = publicIp[publicIpFunctionName](options);
 			queries.push(query);
 			await query;
 			return true;
 		})(),
 		(async () => {
-			const query = publicIp[options.version]({...options, onlyHttps: true});
+			const query = publicIp[publicIpFunctionName]({...options, onlyHttps: true});
 			queries.push(query);
 			await query;
 			return true;
