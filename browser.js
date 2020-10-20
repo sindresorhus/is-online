@@ -13,7 +13,7 @@ const isOnline = async options => {
 		return false;
 	}
 
-  const publicIpFunctionName = options.ipVersion === 4 ? 'v4' : 'v6';
+	const publicIpFunctionName = options.ipVersion === 4 ? 'v4' : 'v6';
 
 	try {
 		await publicIp[publicIpFunctionName](options);
