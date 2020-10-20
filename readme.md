@@ -41,7 +41,7 @@ Milliseconds to wait for a server to respond.
 ##### ipVersion
 
 Type: `number`\
-Values: `4` `6`\
+Values: `4 | 6`\
 Default: `4`
 
 Internet Protocol version to use. This is an advanced option that is usually not necessary to be set, but it can prove useful to specifically assert IPv6 connectivity.
