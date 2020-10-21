@@ -50,9 +50,9 @@ Internet Protocol version to use. This is an advanced option that is usually not
 
 The following checks are run in parallel:
 
-- Retrieve [icanhazip.com](https://github.com/major/icanhaz) via HTTPS
-- Query `myip.opendns.com` on OpenDNS *(Node.js only)*
-- Retrieve Apple's Captive Portal test page *(Node.js only)*
+- Retrieve [icanhazip.com](https://github.com/major/icanhaz) (or [ipify.org](https://www.ipify.org) as fallback) via HTTPS.
+- Query `myip.opendns.com` and `o-o.myaddr.l.google.com` DNS entries. *(Node.js only)*
+- Retrieve Apple's Captive Portal test page (this is what iOS does). *(Node.js only)*
 
 When the first check succeeds, the returned Promise is resolved to `true`.
 
