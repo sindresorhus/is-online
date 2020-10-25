@@ -11,7 +11,7 @@ const flat = array => [].concat(...array);
 const appleCheck = options => {
 	const gotPromise = got('https://captive.apple.com/hotspot-detect.html', {
 		timeout: options.timeout,
-		family: options.ipVersion,
+		dnsLookupIpVersion: options.ipVersion === 6 ? 'ipv6' : 'ipv4',
 		headers: {
 			'user-agent': 'CaptiveNetworkSupport/1.0 wispr'
 		}
@@ -85,5 +85,3 @@ const isOnline = options => {
 };
 
 module.exports = isOnline;
-// TODO: Remove this for the next major release
-module.exports.default = isOnline;
