@@ -15,10 +15,10 @@ test('v4 with impossible timeout', async t => {
 
 if (!process.env.CI) {
 	test('v6', async t => {
-		t.true(await isOnline({version: 'v6'}));
+		t.true(await isOnline({ipVersion: 6}));
 	});
 
 	test('v6 with timeout', async t => {
-		t.true(await isOnline({version: 'v6', timeout: 500}));
+		t.true(await isOnline({ipVersion: 6, timeout: 500}));
 	});
 }

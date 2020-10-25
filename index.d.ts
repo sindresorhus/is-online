@@ -10,9 +10,9 @@ declare namespace isOnline {
 		/**
 		Internet Protocol version to use. This is an advanced option that is usually not necessary to be set, but it can prove useful to specifically assert IPv6 connectivity.
 
-		@default 'v4'
+		@default 4
 		*/
-		readonly version?: 'v4' | 'v6';
+		readonly ipVersion?: 4 | 6;
 	}
 }
 
