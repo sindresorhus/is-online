@@ -29,6 +29,7 @@ When any check succeeds, the returned Promise is resolved to `true`.
 @example
 ```
 import isOnline = require('is-online');
+
 (async () => {
 	console.log(await isOnline());
 	//=> true
