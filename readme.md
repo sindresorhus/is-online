@@ -54,7 +54,7 @@ The following checks are run in parallel:
 - Query `myip.opendns.com` and `o-o.myaddr.l.google.com` DNS entries. *(Node.js only)*
 - Retrieve Apple's Captive Portal test page (this is what iOS does). *(Node.js only)*
 
-When the first check succeeds, the returned Promise is resolved to `true`.
+When any check succeeds, the returned Promise is resolved to `true`.
 
 ## Proxy support
 

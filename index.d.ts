@@ -24,7 +24,7 @@ The following checks are run in parallel:
 - Query `myip.opendns.com` on OpenDNS (Node.js only)
 - Retrieve Apple's Captive Portal test page (Node.js only)
 
-When the first check succeeds, the returned Promise is resolved to `true`.
+When any check succeeds, the returned Promise is resolved to `true`.
 
 @example
 ```
