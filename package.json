@@ -1,6 +1,6 @@
 {
 	"name": "is-online",
-	"version": "8.5.1",
+	"version": "9.0.0",
 	"description": "Check if the internet connection is up",
 	"license": "MIT",
 	"repository": "sindresorhus/is-online",
@@ -14,7 +14,7 @@
 		"silverwind <me@silverwind.io> (github.com/silverwind)"
 	],
 	"engines": {
-		"node": ">=8"
+		"node": ">=10"
 	},
 	"scripts": {
 		"test": "xo && ava test.js && tsd"
@@ -47,15 +47,20 @@
 		"disconnected"
 	],
 	"dependencies": {
-		"got": "^9.6.0",
-		"p-any": "^2.0.0",
-		"p-timeout": "^3.0.0",
-		"public-ip": "^4.0.1"
+		"got": "^11.8.0",
+		"p-any": "^3.0.0",
+		"p-timeout": "^3.2.0",
+		"public-ip": "^4.0.2"
 	},
 	"devDependencies": {
 		"ava": "^2.4.0",
-		"tsd": "^0.11.0",
-		"xo": "^0.25.3"
+		"tsd": "^0.13.1",
+		"xo": "^0.34.1"
 	},
-	"browser": "browser.js"
+	"browser": "browser.js",
+	"xo": {
+		"rules": {
+			"unicorn/prefer-optional-catch-binding": "off"
+		}
+	}
 }
