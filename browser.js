@@ -9,7 +9,7 @@ const isOnline = async options => {
 		...options
 	};
 
-	if (navigator && navigator.onLine === false) {
+	if (navigator && !navigator.onLine) {
 		return false;
 	}
 
