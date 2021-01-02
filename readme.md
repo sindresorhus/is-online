@@ -6,13 +6,11 @@ Works in Node.js and the browser *(with a bundler)*.
 
 In the browser you have [`navigator.onLine`](https://developer.mozilla.org/en-US/docs/Web/API/NavigatorOnLine.onLine), but it's useless as it only tells you if there's a local connection, and not whether the internet is accessible.
 
-
 ## Install
 
 ```
 $ npm install is-online
 ```
-
 
 ## Usage
 
@@ -24,7 +22,6 @@ const isOnline = require('is-online');
 	//=> true
 })();
 ```
-
 
 ## API
 
@@ -41,36 +38,32 @@ Default: `5000`
 
 Milliseconds to wait for a server to respond.
 
-##### version
+##### ipVersion
 
-Type: `string`\
-Values: `'v4'` `'v6'`\
-Default: `'v4'`
+Type: `number`\
+Values: `4 | 6`\
+Default: `4`
 
 Internet Protocol version to use. This is an advanced option that is usually not necessary to be set, but it can prove useful to specifically assert IPv6 connectivity.
-
 
 ## How it works
 
 The following checks are run in parallel:
 
-- Retrieve [icanhazip.com](https://github.com/major/icanhaz) via HTTPS
-- Query `myip.opendns.com` on OpenDNS *(Node.js only)*
-- Retrieve Apple's Captive Portal test page *(Node.js only)*
+- Retrieve [icanhazip.com](https://github.com/major/icanhaz) (or [ipify.org](https://www.ipify.org) as fallback) via HTTPS.
+- Query `myip.opendns.com` and `o-o.myaddr.l.google.com` DNS entries. *(Node.js only)*
+- Retrieve Apple's Captive Portal test page (this is what iOS does). *(Node.js only)*
 
-When the first check succeeds, the returned Promise is resolved to `true`.
-
+When any check succeeds, the returned Promise is resolved to `true`.
 
 ## Proxy support
 
 To make it work through proxies, you need to set up [`global-agent`](https://github.com/gajus/global-agent).
 
-
 ## Maintainers
 
 - [Sindre Sorhus](https://github.com/sindresorhus)
 - [silverwind](https://github.com/silverwind)
-
 
 ## Related
 
