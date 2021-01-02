@@ -1,4 +1,4 @@
-# is-online [![Build Status](https://travis-ci.com/sindresorhus/is-online.svg?branch=master)](https://travis-ci.com/github/sindresorhus/is-online)
+# is-online
 
 > Check if the internet connection is up
 
