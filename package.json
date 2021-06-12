@@ -50,7 +50,7 @@
 		"got": "^11.8.0",
 		"p-any": "^3.0.0",
 		"p-timeout": "^3.2.0",
-		"public-ip": "^4.0.2"
+		"public-ip": "^4.0.4"
 	},
 	"devDependencies": {
 		"ava": "^2.4.0",
