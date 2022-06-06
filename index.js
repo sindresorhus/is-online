@@ -1,20 +1,18 @@
-'use strict';
-const os = require('os');
-const got = require('got');
-const publicIp = require('public-ip');
-const pAny = require('p-any');
-const pTimeout = require('p-timeout');
-
-// Use Array#flat when targeting Node.js 12
-const flat = array => [].concat(...array);
+import os from 'node:os';
+import got, {CancelError} from 'got';
+import publicIp from 'public-ip';
+import pAny from 'p-any';
+import pTimeout from 'p-timeout';
 
 const appleCheck = options => {
 	const gotPromise = got('https://captive.apple.com/hotspot-detect.html', {
-		timeout: options.timeout,
-		dnsLookupIpVersion: options.ipVersion === 6 ? 'ipv6' : 'ipv4',
+		timeout: {
+			request: options.timeout,
+		},
+		dnsLookupIpVersion: options.ipVersion,
 		headers: {
-			'user-agent': 'CaptiveNetworkSupport/1.0 wispr'
-		}
+			'user-agent': 'CaptiveNetworkSupport/1.0 wispr',
+		},
 	});
 
 	const promise = (async () => {
@@ -24,7 +22,7 @@ const appleCheck = options => {
 				throw new Error('Apple check failed');
 			}
 		} catch (error) {
-			if (!(error instanceof got.CancelError)) {
+			if (!(error instanceof CancelError)) {
 				throw error;
 			}
 		}
@@ -35,15 +33,16 @@ const appleCheck = options => {
 	return promise;
 };
 
-const isOnline = options => {
+// Note: It cannot be `async`` as then it looses the `.cancel()` method.
+export default function isOnline(options) {
 	options = {
 		timeout: 5000,
 		ipVersion: 4,
-		...options
+		...options,
 	};
 
-	if (flat(Object.values(os.networkInterfaces())).every(({internal}) => internal)) {
-		return Promise.resolve(false);
+	if (Object.values(os.networkInterfaces()).flat().every(({internal}) => internal)) {
+		return false;
 	}
 
 	if (![4, 6].includes(options.ipVersion)) {
@@ -72,7 +71,7 @@ const isOnline = options => {
 			queries.push(query);
 			await query;
 			return true;
-		})()
+		})(),
 	]);
 
 	return pTimeout(promise, options.timeout).catch(() => {
@@ -82,6 +81,15 @@ const isOnline = options => {
 
 		return false;
 	});
-};
 
-module.exports = isOnline;
+	// TODO: Use this instead when supporting AbortController.
+	// try {
+	// 	return await pTimeout(promise, options.timeout);
+	// } catch {
+	// 	for (const query of queries) {
+	// 		query.cancel();
+	// 	}
+
+	// 	return false;
+	// }
+}

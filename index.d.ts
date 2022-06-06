@@ -1,20 +1,20 @@
-declare namespace isOnline {
-	interface Options {
-		/**
-		Milliseconds to wait for a server to respond.
+export type Options = {
+	/**
+	Milliseconds to wait for a server to respond.
 
-		@default 5000
-		*/
-		readonly timeout?: number;
+	@default 5000
+	*/
+	readonly timeout?: number;
 
-		/**
-		Internet Protocol version to use. This is an advanced option that is usually not necessary to be set, but it can prove useful to specifically assert IPv6 connectivity.
+	/**
+	[Internet Protocol version](https://en.wikipedia.org/wiki/Internet_Protocol#Version_history) to use.
 
-		@default 4
-		*/
-		readonly ipVersion?: 4 | 6;
-	}
-}
+	This is an advanced option that is usually not necessary to be set, but it can prove useful to specifically assert IPv6 connectivity.
+
+	@default 4
+	*/
+	readonly ipVersion?: 4 | 6;
+};
 
 /**
 Check if the internet connection is up.
@@ -28,14 +28,10 @@ When any check succeeds, the returned Promise is resolved to `true`.
 
 @example
 ```
-import isOnline = require('is-online');
+import isOnline from 'is-online';
 
-(async () => {
-	console.log(await isOnline());
-	//=> true
-})();
+console.log(await isOnline());
+//=> true
 ```
 */
-declare function isOnline(options?: isOnline.Options): Promise<boolean>;
-
-export = isOnline;
+export default function isOnline(options?: Options): Promise<boolean>;

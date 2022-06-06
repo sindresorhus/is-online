@@ -13,11 +13,17 @@
 	"contributors": [
 		"silverwind <me@silverwind.io> (github.com/silverwind)"
 	],
+	"type": "module",
+	"exports": {
+		"types": "./index.d.ts",
+		"node": "./index.js",
+		"default": "./browser.js"
+	},
 	"engines": {
-		"node": ">=10"
+		"node": ">=14.16"
 	},
 	"scripts": {
-		"test": "xo && ava test.js && tsd"
+		"test": "xo && ava && tsd"
 	},
 	"files": [
 		"index.js",
@@ -47,20 +53,19 @@
 		"disconnected"
 	],
 	"dependencies": {
-		"got": "^11.8.0",
-		"p-any": "^3.0.0",
-		"p-timeout": "^3.2.0",
-		"public-ip": "^4.0.4"
+		"got": "^12.1.0",
+		"p-any": "^4.0.0",
+		"p-timeout": "^5.1.0",
+		"public-ip": "^5.0.0"
 	},
 	"devDependencies": {
-		"ava": "^2.4.0",
-		"tsd": "^0.13.1",
-		"xo": "^0.34.1"
+		"ava": "^4.3.0",
+		"tsd": "^0.20.0",
+		"xo": "^0.49.0"
 	},
-	"browser": "browser.js",
-	"xo": {
-		"rules": {
-			"unicorn/prefer-optional-catch-binding": "off"
-		}
+	"ava": {
+		"files": [
+			"test.js"
+		]
 	}
 }

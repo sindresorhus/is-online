@@ -1,15 +1,14 @@
 /* eslint-env browser */
-'use strict';
-const publicIp = require('public-ip');
+import publicIp from 'public-ip';
 
-const isOnline = async options => {
+export default async function isOnline(options) {
 	options = {
 		timeout: 5000,
 		ipVersion: 4,
-		...options
+		...options,
 	};
 
-	if (navigator && !navigator.onLine) {
+	if (!navigator?.onLine) {
 		return false;
 	}
 
@@ -18,9 +17,7 @@ const isOnline = async options => {
 	try {
 		await publicIp[publicIpFunctionName](options);
 		return true;
-	} catch (_) {
+	} catch {
 		return false;
 	}
-};
-
-module.exports = isOnline;
+}

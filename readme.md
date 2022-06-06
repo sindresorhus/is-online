@@ -4,23 +4,21 @@
 
 Works in Node.js and the browser *(with a bundler)*.
 
-In the browser you have [`navigator.onLine`](https://developer.mozilla.org/en-US/docs/Web/API/NavigatorOnLine.onLine), but it's useless as it only tells you if there's a local connection, and not whether the internet is accessible.
+In the browser, there is already [`navigator.onLine`](https://developer.mozilla.org/en-US/docs/Web/API/NavigatorOnLine.onLine), but it's useless as it only tells you if there's a local connection, and not whether the internet is accessible.
 
 ## Install
 
-```
-$ npm install is-online
+```sh
+npm install is-online
 ```
 
 ## Usage
 
 ```js
-const isOnline = require('is-online');
+import isOnline from 'is-online';
 
-(async () => {
-	console.log(await isOnline());
-	//=> true
-})();
+console.log(await isOnline());
+//=> true
 ```
 
 ## API
@@ -44,7 +42,9 @@ Type: `number`\
 Values: `4 | 6`\
 Default: `4`
 
-Internet Protocol version to use. This is an advanced option that is usually not necessary to be set, but it can prove useful to specifically assert IPv6 connectivity.
+The [Internet Protocol version](https://en.wikipedia.org/wiki/Internet_Protocol#Version_history) to use.
+
+This is an advanced option that is usually not necessary to be set, but it can prove useful to specifically assert IPv6 connectivity.
 
 ## How it works
 

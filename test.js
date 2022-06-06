@@ -1,5 +1,6 @@
+import process from 'node:process';
 import test from 'ava';
-import isOnline from '.';
+import isOnline from './index.js';
 
 test('v4', async t => {
 	t.true(await isOnline());

@@ -1,5 +1,5 @@
 import {expectType} from 'tsd';
-import isOnline = require('.');
+import isOnline from './index.js';
 
 expectType<Promise<boolean>>(isOnline());
 expectType<Promise<boolean>>(isOnline({timeout: 10}));
