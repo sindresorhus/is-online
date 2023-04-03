@@ -33,6 +33,32 @@ const appleCheck = options => {
 	return promise;
 };
 
+const customHostCheck = options => {
+	const gotPromise = got(options.hostname, {
+		timeout: {
+			request: options.timeout,
+		},
+		dnsLookupIpVersion: options.ipVersion,
+	});
+
+	const promise = (async () => {
+		try {
+			const {statusCode} = await gotPromise;
+			if (statusCode !== 200) {
+				throw new Error('Custom host check failed');
+			}
+		} catch (error) {
+			if (!(error instanceof CancelError)) {
+				throw error;
+			}
+		}
+	})();
+
+	promise.cancel = gotPromise.cancel;
+
+	return promise;
+};
+
 // Note: It cannot be `async`` as then it looses the `.cancel()` method.
 export default function isOnline(options) {
 	options = {
@@ -68,6 +94,12 @@ export default function isOnline(options) {
 		})(),
 		(async () => {
 			const query = appleCheck(options);
+			queries.push(query);
+			await query;
+			return true;
+		})(),
+		(async () => {
+			const query = customHostCheck(options);
 			queries.push(query);
 			await query;
 			return true;
