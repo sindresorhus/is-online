@@ -53,6 +53,7 @@ The following checks are run in parallel:
 - Retrieve [icanhazip.com](https://github.com/major/icanhaz) (or [ipify.org](https://www.ipify.org) as fallback) via HTTPS.
 - Query `myip.opendns.com` and `o-o.myaddr.l.google.com` DNS entries. *(Node.js only)*
 - Retrieve Apple's Captive Portal test page (this is what iOS does). *(Node.js only)*
+- Custom hostname if available in `options.hostname`
 
 When any check succeeds, the returned Promise is resolved to `true`.
 
