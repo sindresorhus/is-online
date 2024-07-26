@@ -1,5 +1,5 @@
 /* eslint-env browser */
-import publicIp from 'public-ip';
+import {publicIpv4, publicIpv6} from 'public-ip';
 
 export default async function isOnline(options) {
 	options = {
@@ -8,14 +8,15 @@ export default async function isOnline(options) {
 		...options,
 	};
 
+	// eslint-disable-next-line n/no-unsupported-features/node-builtins
 	if (!navigator?.onLine) {
 		return false;
 	}
 
-	const publicIpFunctionName = options.ipVersion === 4 ? 'v4' : 'v6';
+	const publicIpFunction = options.ipVersion === 4 ? publicIpv4 : publicIpv6;
 
 	try {
-		await publicIp[publicIpFunctionName](options);
+		await publicIpFunction(options);
 		return true;
 	} catch {
 		return false;

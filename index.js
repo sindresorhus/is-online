@@ -1,6 +1,6 @@
 import os from 'node:os';
 import got, {CancelError} from 'got';
-import publicIp from 'public-ip';
+import {publicIpv4, publicIpv6} from 'public-ip';
 import pAny from 'p-any';
 import pTimeout from 'p-timeout';
 
@@ -18,7 +18,7 @@ const appleCheck = options => {
 	const promise = (async () => {
 		try {
 			const {body} = await gotPromise;
-			if (!body || !body.includes('Success')) {
+			if (!body?.includes('Success')) {
 				throw new Error('Apple check failed');
 			}
 		} catch (error) {
@@ -49,19 +49,18 @@ export default function isOnline(options) {
 		throw new TypeError('`ipVersion` must be 4 or 6');
 	}
 
-	const publicIpFunctionName = options.ipVersion === 4 ? 'v4' : 'v6';
-
+	const publicIpFunction = options.ipVersion === 4 ? publicIpv4 : publicIpv6;
 	const queries = [];
 
 	const promise = pAny([
 		(async () => {
-			const query = publicIp[publicIpFunctionName](options);
+			const query = publicIpFunction(options);
 			queries.push(query);
 			await query;
 			return true;
 		})(),
 		(async () => {
-			const query = publicIp[publicIpFunctionName]({...options, onlyHttps: true});
+			const query = publicIpFunction({...options, onlyHttps: true});
 			queries.push(query);
 			await query;
 			return true;
@@ -74,7 +73,7 @@ export default function isOnline(options) {
 		})(),
 	]);
 
-	return pTimeout(promise, options.timeout).catch(() => {
+	return pTimeout(promise, {milliseconds: options.timeout}).catch(() => { // eslint-disable-line promise/prefer-await-to-then
 		for (const query of queries) {
 			query.cancel();
 		}

@@ -19,8 +19,9 @@
 		"node": "./index.js",
 		"default": "./browser.js"
 	},
+	"sideEffects": false,
 	"engines": {
-		"node": ">=14.16"
+		"node": ">=18"
 	},
 	"scripts": {
 		"test": "xo && ava && tsd"
@@ -53,15 +54,15 @@
 		"disconnected"
 	],
 	"dependencies": {
-		"got": "^12.1.0",
+		"got": "^13.0.0",
 		"p-any": "^4.0.0",
-		"p-timeout": "^5.1.0",
-		"public-ip": "^5.0.0"
+		"p-timeout": "^6.1.2",
+		"public-ip": "^7.0.1"
 	},
 	"devDependencies": {
-		"ava": "^4.3.0",
-		"tsd": "^0.20.0",
-		"xo": "^0.49.0"
+		"ava": "^6.1.3",
+		"tsd": "^0.31.1",
+		"xo": "^0.59.2"
 	},
 	"ava": {
 		"files": [
