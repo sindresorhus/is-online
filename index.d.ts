@@ -7,6 +7,11 @@ export type Options = {
 	readonly timeout?: number;
 
 	/**
+	AbortSignal to cancel the operation.
+	*/
+	readonly signal?: AbortSignal;
+
+	/**
 	[Internet Protocol version](https://en.wikipedia.org/wiki/Internet_Protocol#Version_history) to use.
 
 	This is an advanced option that is usually not necessary to be set, but it can prove useful to specifically assert IPv6 connectivity.

@@ -1,40 +1,28 @@
 import os from 'node:os';
-import got, {CancelError} from 'got';
+import {withHttpError, withTimeout} from 'fetch-extras';
 import {publicIpv4, publicIpv6} from 'public-ip';
 import pAny from 'p-any';
 import pTimeout from 'p-timeout';
 
-const appleCheck = options => {
-	const gotPromise = got('https://captive.apple.com/hotspot-detect.html', {
-		timeout: {
-			request: options.timeout,
-		},
-		dnsLookupIpVersion: options.ipVersion,
+const appleCheck = async (options, signal) => {
+	// eslint-disable-next-line n/no-unsupported-features/node-builtins
+	const fetchWithTimeout = withHttpError(withTimeout(globalThis.fetch, options.timeout));
+
+	const response = await fetchWithTimeout('https://captive.apple.com/hotspot-detect.html', {
+		signal,
 		headers: {
 			'user-agent': 'CaptiveNetworkSupport/1.0 wispr',
 		},
 	});
 
-	const promise = (async () => {
-		try {
-			const {body} = await gotPromise;
-			if (!body?.includes('Success')) {
-				throw new Error('Apple check failed');
-			}
-		} catch (error) {
-			if (!(error instanceof CancelError)) {
-				throw error;
-			}
-		}
-	})();
+	const body = await response.text();
 
-	promise.cancel = gotPromise.cancel;
-
-	return promise;
+	if (!body?.includes('Success')) {
+		throw new Error('Apple check failed');
+	}
 };
 
-// Note: It cannot be `async`` as then it looses the `.cancel()` method.
-export default function isOnline(options) {
+export default async function isOnline(options = {}) {
 	options = {
 		timeout: 5000,
 		ipVersion: 4,
@@ -49,46 +37,46 @@ export default function isOnline(options) {
 		throw new TypeError('`ipVersion` must be 4 or 6');
 	}
 
-	const publicIpFunction = options.ipVersion === 4 ? publicIpv4 : publicIpv6;
-	const queries = [];
-
-	const promise = pAny([
-		(async () => {
-			const query = publicIpFunction(options);
-			queries.push(query);
-			await query;
-			return true;
-		})(),
-		(async () => {
-			const query = publicIpFunction({...options, onlyHttps: true});
-			queries.push(query);
-			await query;
-			return true;
-		})(),
-		(async () => {
-			const query = appleCheck(options);
-			queries.push(query);
-			await query;
-			return true;
-		})(),
-	]);
-
-	return pTimeout(promise, {milliseconds: options.timeout}).catch(() => { // eslint-disable-line promise/prefer-await-to-then
-		for (const query of queries) {
-			query.cancel();
-		}
-
+	if (options.signal?.aborted) {
 		return false;
-	});
+	}
 
-	// TODO: Use this instead when supporting AbortController.
-	// try {
-	// 	return await pTimeout(promise, options.timeout);
-	// } catch {
-	// 	for (const query of queries) {
-	// 		query.cancel();
-	// 	}
+	const publicIpFunction = options.ipVersion === 4 ? publicIpv4 : publicIpv6;
 
-	// 	return false;
-	// }
+	const promise = (async () => {
+		const promises = [
+			publicIpFunction({...options, signal: options.signal}),
+			publicIpFunction({...options, onlyHttps: true, signal: options.signal}),
+			appleCheck(options, options.signal),
+		].map(async promise => {
+			await promise;
+			return true;
+		});
+
+		return pAny(promises);
+	})();
+
+	if (options.signal) {
+		const abortPromise = new Promise((resolve, reject) => {
+			if (options.signal.aborted) {
+				reject(new Error('Aborted'));
+			} else {
+				options.signal.addEventListener('abort', () => {
+					reject(new Error('Aborted'));
+				}, {once: true});
+			}
+		});
+
+		try {
+			return await pTimeout(Promise.race([promise, abortPromise]), {milliseconds: options.timeout});
+		} catch {
+			return false;
+		}
+	}
+
+	try {
+		return await pTimeout(promise, {milliseconds: options.timeout});
+	} catch {
+		return false;
+	}
 }

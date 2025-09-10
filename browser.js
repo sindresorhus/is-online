@@ -1,7 +1,7 @@
 /* eslint-env browser */
 import {publicIpv4, publicIpv6} from 'public-ip';
 
-export default async function isOnline(options) {
+export default async function isOnline(options = {}) {
 	options = {
 		timeout: 5000,
 		ipVersion: 4,
@@ -16,7 +16,7 @@ export default async function isOnline(options) {
 	const publicIpFunction = options.ipVersion === 4 ? publicIpv4 : publicIpv6;
 
 	try {
-		await publicIpFunction(options);
+		await publicIpFunction({...options, signal: options.signal});
 		return true;
 	} catch {
 		return false;

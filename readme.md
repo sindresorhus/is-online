@@ -36,6 +36,12 @@ Default: `5000`
 
 Milliseconds to wait for a server to respond.
 
+##### signal
+
+Type: `AbortSignal`
+
+Signal to abort the operation.
+
 ##### ipVersion
 
 Type: `number`\

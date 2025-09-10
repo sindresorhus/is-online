@@ -54,7 +54,7 @@
 		"disconnected"
 	],
 	"dependencies": {
-		"got": "^13.0.0",
+		"fetch-extras": "^1.0.0",
 		"p-any": "^4.0.0",
 		"p-timeout": "^6.1.2",
 		"public-ip": "^7.0.1"
