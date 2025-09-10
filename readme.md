@@ -111,18 +111,23 @@ This is an advanced option that is usually not necessary to be set, but it can p
 
 Type: `string[]`
 
-Fallback URLs to check when the main connectivity checks fail.
+Fallback URLs to check for connectivity.
 
-Only HTTP and HTTPS URLs are supported. These URLs will only be checked if all the default connectivity checks (public IP services and Apple Captive Portal) fail.
+Only HTTP and HTTPS URLs are supported. In Node.js, these URLs are checked only if all default connectivity checks fail. In the browser, these URLs are checked in parallel with the default checks for better resilience against ad blockers.
 
 ## How it works
 
 The following checks are run in parallel:
 
+**Node.js:**
 - Retrieve [icanhazip.com](https://github.com/major/icanhaz) (or [ipify.org](https://www.ipify.org) as fallback) via HTTPS.
-- Query `myip.opendns.com` and `o-o.myaddr.l.google.com` DNS entries. *(Node.js only)*
-- Retrieve Apple's Captive Portal test page (this is what iOS does). *(Node.js only)*
-- Check Cloudflare's website via HTTPS. *(Node.js only)*
+- Query `myip.opendns.com` and `o-o.myaddr.l.google.com` DNS entries.
+- Retrieve Apple's Captive Portal test page (this is what iOS does).
+- Check Cloudflare's website via HTTPS.
+
+**Browser:**
+- Retrieve [icanhazip.com](https://github.com/major/icanhaz) (or [ipify.org](https://www.ipify.org) as fallback) via HTTPS.
+- Check Cloudflare's 1.1.1.1 service via HTTPS (helps when ad blockers block icanhazip.com).
 
 When any check succeeds, the returned Promise is resolved to `true`.
 

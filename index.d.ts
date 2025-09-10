@@ -38,9 +38,9 @@ export type Options = {
 	readonly ipVersion?: 4 | 6;
 
 	/**
-	Fallback URLs to check when the main connectivity checks fail.
+	Fallback URLs to check for connectivity.
 
-	Only HTTP and HTTPS URLs are supported. These URLs will only be checked if all the default connectivity checks (public IP services and Apple Captive Portal) fail.
+	Only HTTP and HTTPS URLs are supported. In Node.js, these URLs are checked only if all default connectivity checks fail. In the browser, these URLs are checked in parallel with the default checks for better resilience against ad blockers.
 
 	@example
 	```
@@ -64,10 +64,16 @@ export type Options = {
 Check if the internet connection is up.
 
 The following checks are run in parallel:
-- Retrieve [icanhazip.com](https://github.com/major/icanhaz) via HTTPS
-- Query `myip.opendns.com` on OpenDNS (Node.js only)
-- Retrieve Apple's Captive Portal test page (Node.js only)
-- Check Cloudflare's website via HTTPS (Node.js only)
+
+Node.js:
+- Retrieve [icanhazip.com](https://github.com/major/icanhaz) (or ipify.org as fallback) via HTTPS
+- Query `myip.opendns.com` on OpenDNS
+- Retrieve Apple's Captive Portal test page
+- Check Cloudflare's website via HTTPS
+
+Browser:
+- Retrieve [icanhazip.com](https://github.com/major/icanhaz) (or ipify.org as fallback) via HTTPS
+- Check Cloudflare's 1.1.1.1 service via HTTPS (helps when ad blockers block icanhazip.com)
 
 When any check succeeds, the returned Promise is resolved to `true`.
 

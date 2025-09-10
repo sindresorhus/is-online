@@ -70,24 +70,26 @@ export default async function isOnline(options = {}) {
 
 	const publicIpFunction = options.ipVersion === 4 ? publicIpv4 : publicIpv6;
 
+	// Run multiple checks in parallel for better resilience
+	const checks = [
+		// Main check using public-ip (which includes icanhazip and ipify fallback)
+		publicIpFunction({...options, signal: options.signal}),
+		// Additional check using Cloudflare (CORS-enabled)
+		// This helps when Brave blocks icanhazip (works for both IPv4 and IPv6)
+		urlCheck('https://1.1.1.1/', options, options.signal),
+	];
+
+	// Add any user-provided fallback URLs to parallel checks
+	if (options.fallbackUrls?.length > 0) {
+		checks.push(checkUrls(options.fallbackUrls, options, options.signal));
+	}
+
 	try {
-		await publicIpFunction({...options, signal: options.signal});
+		// Use Promise.any to return true if ANY check succeeds
+		await Promise.any(checks);
 		return true;
 	} catch {
-		// Main check failed, try fallback URLs if provided
-		if (options.fallbackUrls?.length > 0) {
-			try {
-				if (options.signal?.aborted) {
-					return false;
-				}
-
-				await checkUrls(options.fallbackUrls, options, options.signal);
-				return true;
-			} catch {
-				return false;
-			}
-		}
-
+		// All checks failed
 		return false;
 	}
 }
