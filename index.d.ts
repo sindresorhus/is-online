@@ -65,15 +65,15 @@ Check if the internet connection is up.
 
 The following checks are run in parallel:
 
-Node.js:
-- Retrieve [icanhazip.com](https://github.com/major/icanhaz) (or ipify.org as fallback) via HTTPS
-- Query `myip.opendns.com` on OpenDNS
-- Retrieve Apple's Captive Portal test page
-- Check Cloudflare's website via HTTPS
+**Node.js:**
+- Retrieve [icanhazip.com](https://github.com/major/icanhaz) (or [ipify.org](https://www.ipify.org) as fallback) via HTTPS.
+- Query `myip.opendns.com` and `o-o.myaddr.l.google.com` DNS entries.
+- Retrieve Apple's Captive Portal test page (this is what iOS does).
+- Check Cloudflare's website via HTTPS.
 
-Browser:
-- Retrieve [icanhazip.com](https://github.com/major/icanhaz) (or ipify.org as fallback) via HTTPS
-- Check Cloudflare's 1.1.1.1 service via HTTPS (helps when ad blockers block icanhazip.com)
+**Browser:**
+- Retrieve [icanhazip.com](https://github.com/major/icanhaz) (or [ipify.org](https://www.ipify.org) as fallback) via HTTPS.
+- Check Cloudflare's 1.1.1.1 service via HTTPS (helps when ad blockers block icanhazip.com).
 
 When any check succeeds, the returned Promise is resolved to `true`.
 

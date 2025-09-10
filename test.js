@@ -1,6 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import process from 'node:process';
+import {subscribe, unsubscribe} from 'node:diagnostics_channel';
 import {createTestServer} from './test-server.js';
 import isOnline from './index.js';
 
@@ -151,3 +152,27 @@ if (!process.env.CI) {
 		assert.equal(await promise, false);
 	});
 }
+
+test('diagnostics channel publishes failure events', async () => {
+	const diagnostics = [];
+	const listener = message => {
+		diagnostics.push(message);
+	};
+
+	subscribe('is-online:connectivity-check', listener);
+
+	try {
+		// Success case should not publish anything
+		await isOnline();
+		assert.equal(diagnostics.length, 0);
+
+		// Failure case should publish diagnostic info
+		await isOnline({timeout: 1});
+		assert.ok(diagnostics.length > 0);
+		assert.ok(diagnostics[0].url);
+		assert.ok(diagnostics[0].error);
+		assert.ok(diagnostics[0].timestamp);
+	} finally {
+		unsubscribe('is-online:connectivity-check', listener);
+	}
+});

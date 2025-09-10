@@ -133,6 +133,28 @@ When any check succeeds, the returned Promise is resolved to `true`.
 
 If all the above checks fail and you have provided `fallbackUrls`, those will be checked as a fallback. The URLs are checked by making HTTP/HTTPS requests (HEAD requests when possible, with GET as fallback).
 
+## Diagnostics
+
+The package publishes diagnostic information when connectivity checks fail using Node.js [Diagnostics Channel](https://nodejs.org/api/diagnostics_channel.html#diagnostics-channel). This is useful for debugging network issues and is only available in Node.js environments.
+
+```js
+import {subscribe} from 'node:diagnostics_channel';
+import isOnline from 'is-online';
+
+// Subscribe to failure events
+subscribe('is-online:connectivity-check', message => {
+	console.log('Failed URL:', message.url);
+	console.log('Error:', message.error);
+});
+
+await isOnline();
+```
+
+Each failure event includes:
+- `timestamp` - When the failure occurred
+- `url` - The specific URL that failed
+- `error` - Error details (name, message, code)
+
 ## Proxy support
 
 To make it work through proxies, you need to set up [`global-agent`](https://github.com/gajus/global-agent).

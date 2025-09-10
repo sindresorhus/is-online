@@ -1,8 +1,31 @@
 import os from 'node:os';
+import {channel} from 'node:diagnostics_channel';
 import {withHttpError, withTimeout} from 'fetch-extras';
 import {publicIpv4, publicIpv6} from 'public-ip';
 import pAny from 'p-any';
 import pTimeout from 'p-timeout';
+
+const diagnosticsChannel = channel('is-online:connectivity-check');
+
+const publishFailure = (url, error) => {
+	if (!diagnosticsChannel.hasSubscribers) {
+		return;
+	}
+
+	try {
+		diagnosticsChannel.publish({
+			timestamp: Date.now(),
+			url,
+			error: {
+				name: error.constructor.name,
+				message: error.message,
+				code: error.code,
+			},
+		});
+	} catch {
+		// Ignore diagnostics errors - never affect main functionality
+	}
+};
 
 const fetchUrl = async (url, options, signal, fetchOptions = {}) => {
 	const fetchWithTimeout = withHttpError(withTimeout(globalThis.fetch, options.timeout));
@@ -10,17 +33,23 @@ const fetchUrl = async (url, options, signal, fetchOptions = {}) => {
 };
 
 const appleCheck = async (options, signal) => {
-	const response = await fetchUrl('https://captive.apple.com/hotspot-detect.html', options, signal, {
-		method: 'GET', // Apple captive portal requires GET to return body content
-		headers: {
-			'user-agent': 'CaptiveNetworkSupport/1.0 wispr',
-		},
-	});
+	const url = 'https://captive.apple.com/hotspot-detect.html';
+	try {
+		const response = await fetchUrl(url, options, signal, {
+			method: 'GET', // Apple captive portal requires GET to return body content
+			headers: {
+				'user-agent': 'CaptiveNetworkSupport/1.0 wispr',
+			},
+		});
 
-	const body = await response.text();
+		const body = await response.text();
 
-	if (!body?.includes('Success')) {
-		throw new Error('Apple check failed');
+		if (!body?.includes('Success')) {
+			throw new Error('Apple check failed');
+		}
+	} catch (error) {
+		publishFailure(url, error);
+		throw error;
 	}
 };
 
@@ -41,8 +70,46 @@ const urlCheck = async (url, options, signal) => {
 		if (error.status === 405 || error.message?.includes('Method Not Allowed')) {
 			await fetchUrl(url, options, signal, {method: 'GET'});
 		} else {
+			// Publish failure for this specific URL
+			publishFailure(url, error);
 			throw error;
 		}
+	}
+};
+
+const createAbortPromise = signal => new Promise((resolve, reject) => {
+	if (signal.aborted) {
+		reject(new Error('Aborted'));
+	} else {
+		signal.addEventListener('abort', () => {
+			reject(new Error('Aborted'));
+		}, {once: true});
+	}
+});
+
+const tryFallbackUrls = async options => {
+	if (!options.fallbackUrls?.length) {
+		return false;
+	}
+
+	if (options.signal?.aborted) {
+		return false;
+	}
+
+	try {
+		const urlPromise = checkUrls(options.fallbackUrls, options, options.signal);
+
+		if (options.signal) {
+			const abortPromise = createAbortPromise(options.signal);
+			await pTimeout(Promise.race([urlPromise, abortPromise]), {milliseconds: options.timeout});
+		} else {
+			await pTimeout(urlPromise, {milliseconds: options.timeout});
+		}
+
+		return true;
+	} catch {
+		// Individual URL failures are already published by urlCheck
+		return false;
 	}
 };
 
@@ -80,10 +147,20 @@ export default async function isOnline(options = {}) {
 
 	const publicIpFunction = options.ipVersion === 4 ? publicIpv4 : publicIpv6;
 
+	const publicIpCheck = async (onlyHttps = false) => {
+		const serviceName = onlyHttps ? 'https://api.ipify.org' : 'https://icanhazip.com';
+		try {
+			await publicIpFunction({...options, onlyHttps, signal: options.signal});
+		} catch (error) {
+			publishFailure(serviceName, error);
+			throw error;
+		}
+	};
+
 	const promise = (async () => {
 		const promises = [
-			publicIpFunction({...options, signal: options.signal}),
-			publicIpFunction({...options, onlyHttps: true, signal: options.signal}),
+			publicIpCheck(false),
+			publicIpCheck(true),
 			appleCheck(options, options.signal),
 			// Cloudflare as additional fallback
 			urlCheck('https://cloudflare.com/', options, options.signal),
@@ -94,16 +171,6 @@ export default async function isOnline(options = {}) {
 
 		return pAny(promises);
 	})();
-
-	const createAbortPromise = signal => new Promise((resolve, reject) => {
-		if (signal.aborted) {
-			reject(new Error('Aborted'));
-		} else {
-			signal.addEventListener('abort', () => {
-				reject(new Error('Aborted'));
-			}, {once: true});
-		}
-	});
 
 	// Try main checks first
 	// eslint-disable-next-line no-warning-comments
@@ -120,28 +187,7 @@ export default async function isOnline(options = {}) {
 	try {
 		return await tryMainChecks();
 	} catch {
-		// Main checks failed, try fallback URLs if provided
-		if (options.fallbackUrls?.length > 0) {
-			try {
-				if (options.signal?.aborted) {
-					return false;
-				}
-
-				const urlPromise = checkUrls(options.fallbackUrls, options, options.signal);
-
-				if (options.signal) {
-					const abortPromise = createAbortPromise(options.signal);
-					await pTimeout(Promise.race([urlPromise, abortPromise]), {milliseconds: options.timeout});
-				} else {
-					await pTimeout(urlPromise, {milliseconds: options.timeout});
-				}
-
-				return true;
-			} catch {
-				return false;
-			}
-		}
-
-		return false;
+		// Individual check failures are already published by each check
+		return tryFallbackUrls(options);
 	}
 }
