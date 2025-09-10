@@ -36,6 +36,28 @@ export type Options = {
 	@default 4
 	*/
 	readonly ipVersion?: 4 | 6;
+
+	/**
+	Fallback URLs to check when the main connectivity checks fail.
+
+	Only HTTP and HTTPS URLs are supported. These URLs will only be checked if all the default connectivity checks (public IP services and Apple Captive Portal) fail.
+
+	@example
+	```
+	import isOnline from 'is-online';
+
+	const result = await isOnline({
+		fallbackUrls: [
+			'https://www.google.com',
+			'https://www.github.com',
+			'http://example.com'
+		]
+	});
+	console.log(result);
+	//=> true
+	```
+	*/
+	readonly fallbackUrls?: readonly string[];
 };
 
 /**
@@ -45,6 +67,7 @@ The following checks are run in parallel:
 - Retrieve [icanhazip.com](https://github.com/major/icanhaz) via HTTPS
 - Query `myip.opendns.com` on OpenDNS (Node.js only)
 - Retrieve Apple's Captive Portal test page (Node.js only)
+- Check Cloudflare's website via HTTPS (Node.js only)
 
 When any check succeeds, the returned Promise is resolved to `true`.
 

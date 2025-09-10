@@ -4,11 +4,14 @@ import {publicIpv4, publicIpv6} from 'public-ip';
 import pAny from 'p-any';
 import pTimeout from 'p-timeout';
 
-const appleCheck = async (options, signal) => {
+const fetchUrl = async (url, options, signal, fetchOptions = {}) => {
 	const fetchWithTimeout = withHttpError(withTimeout(globalThis.fetch, options.timeout));
+	return fetchWithTimeout(url, {signal, ...fetchOptions});
+};
 
-	const response = await fetchWithTimeout('https://captive.apple.com/hotspot-detect.html', {
-		signal,
+const appleCheck = async (options, signal) => {
+	const response = await fetchUrl('https://captive.apple.com/hotspot-detect.html', options, signal, {
+		method: 'GET', // Apple captive portal requires GET to return body content
 		headers: {
 			'user-agent': 'CaptiveNetworkSupport/1.0 wispr',
 		},
@@ -19,6 +22,41 @@ const appleCheck = async (options, signal) => {
 	if (!body?.includes('Success')) {
 		throw new Error('Apple check failed');
 	}
+};
+
+const urlCheck = async (url, options, signal) => {
+	// Validate URL
+	const urlObject = new URL(url);
+
+	// Only allow HTTP and HTTPS
+	if (!['http:', 'https:'].includes(urlObject.protocol)) {
+		throw new Error(`Unsupported protocol: ${urlObject.protocol}`);
+	}
+
+	try {
+		// Use HEAD request when possible to minimize data transfer
+		await fetchUrl(url, options, signal, {method: 'HEAD'});
+	} catch (error) {
+		// If HEAD fails, try GET as fallback (some servers don't support HEAD)
+		if (error.status === 405 || error.message?.includes('Method Not Allowed')) {
+			await fetchUrl(url, options, signal, {method: 'GET'});
+		} else {
+			throw error;
+		}
+	}
+};
+
+const checkUrls = async (urls, options, signal) => {
+	if (!urls?.length) {
+		throw new Error('No URLs to check');
+	}
+
+	const promises = urls.map(async url => {
+		await urlCheck(url, options, signal);
+		return true;
+	});
+
+	return pAny(promises);
 };
 
 export default async function isOnline(options = {}) {
@@ -47,6 +85,8 @@ export default async function isOnline(options = {}) {
 			publicIpFunction({...options, signal: options.signal}),
 			publicIpFunction({...options, onlyHttps: true, signal: options.signal}),
 			appleCheck(options, options.signal),
+			// Cloudflare as additional fallback
+			urlCheck('https://cloudflare.com/', options, options.signal),
 		].map(async promise => {
 			await promise;
 			return true;
@@ -55,27 +95,53 @@ export default async function isOnline(options = {}) {
 		return pAny(promises);
 	})();
 
-	if (options.signal) {
-		const abortPromise = new Promise((resolve, reject) => {
-			if (options.signal.aborted) {
+	const createAbortPromise = signal => new Promise((resolve, reject) => {
+		if (signal.aborted) {
+			reject(new Error('Aborted'));
+		} else {
+			signal.addEventListener('abort', () => {
 				reject(new Error('Aborted'));
-			} else {
-				options.signal.addEventListener('abort', () => {
-					reject(new Error('Aborted'));
-				}, {once: true});
-			}
-		});
-
-		try {
-			return await pTimeout(Promise.race([promise, abortPromise]), {milliseconds: options.timeout});
-		} catch {
-			return false;
+			}, {once: true});
 		}
-	}
+	});
+
+	// Try main checks first
+	// eslint-disable-next-line no-warning-comments
+	// TODO: Use AbortSignal.timeout() instead of pTimeout when it's widely supported
+	const tryMainChecks = async () => {
+		if (options.signal) {
+			const abortPromise = createAbortPromise(options.signal);
+			return pTimeout(Promise.race([promise, abortPromise]), {milliseconds: options.timeout});
+		}
+
+		return pTimeout(promise, {milliseconds: options.timeout});
+	};
 
 	try {
-		return await pTimeout(promise, {milliseconds: options.timeout});
+		return await tryMainChecks();
 	} catch {
+		// Main checks failed, try fallback URLs if provided
+		if (options.fallbackUrls?.length > 0) {
+			try {
+				if (options.signal?.aborted) {
+					return false;
+				}
+
+				const urlPromise = checkUrls(options.fallbackUrls, options, options.signal);
+
+				if (options.signal) {
+					const abortPromise = createAbortPromise(options.signal);
+					await pTimeout(Promise.race([urlPromise, abortPromise]), {milliseconds: options.timeout});
+				} else {
+					await pTimeout(urlPromise, {milliseconds: options.timeout});
+				}
+
+				return true;
+			} catch {
+				return false;
+			}
+		}
+
 		return false;
 	}
 }

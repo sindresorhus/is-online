@@ -55,6 +55,23 @@ console.log(result);
 //=> false
 ```
 
+### With fallback URLs
+
+```js
+import isOnline from 'is-online';
+
+const result = await isOnline({
+	fallbackUrls: [
+		'https://www.google.com',
+		'https://www.github.com',
+		'http://example.com'
+	]
+});
+
+console.log(result);
+//=> true
+```
+
 ## API
 
 ### isOnline(options?)
@@ -90,6 +107,14 @@ The [Internet Protocol version](https://en.wikipedia.org/wiki/Internet_Protocol#
 
 This is an advanced option that is usually not necessary to be set, but it can prove useful to specifically assert IPv6 connectivity.
 
+##### fallbackUrls
+
+Type: `string[]`
+
+Fallback URLs to check when the main connectivity checks fail.
+
+Only HTTP and HTTPS URLs are supported. These URLs will only be checked if all the default connectivity checks (public IP services and Apple Captive Portal) fail.
+
 ## How it works
 
 The following checks are run in parallel:
@@ -97,8 +122,11 @@ The following checks are run in parallel:
 - Retrieve [icanhazip.com](https://github.com/major/icanhaz) (or [ipify.org](https://www.ipify.org) as fallback) via HTTPS.
 - Query `myip.opendns.com` and `o-o.myaddr.l.google.com` DNS entries. *(Node.js only)*
 - Retrieve Apple's Captive Portal test page (this is what iOS does). *(Node.js only)*
+- Check Cloudflare's website via HTTPS. *(Node.js only)*
 
 When any check succeeds, the returned Promise is resolved to `true`.
+
+If all the above checks fail and you have provided `fallbackUrls`, those will be checked as a fallback. The URLs are checked by making HTTP/HTTPS requests (HEAD requests when possible, with GET as fallback).
 
 ## Proxy support
 
