@@ -55,11 +55,20 @@ const appleCheck = async (options, signal) => {
 
 const urlCheck = async (url, options, signal) => {
 	// Validate URL
-	const urlObject = new URL(url);
+	let urlObject;
+	try {
+		urlObject = new URL(url);
+	} catch (error) {
+		// Invalid URL format
+		publishFailure(url, error);
+		throw error;
+	}
 
 	// Only allow HTTP and HTTPS
 	if (!['http:', 'https:'].includes(urlObject.protocol)) {
-		throw new Error(`Unsupported protocol: ${urlObject.protocol}`);
+		const error = new Error(`Unsupported protocol: ${urlObject.protocol}`);
+		publishFailure(url, error);
+		throw error;
 	}
 
 	try {
