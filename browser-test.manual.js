@@ -1,5 +1,8 @@
 // Need to test manually in DevTools
-// $ npx browserify browser-test.js | pbcopy
+// $ npx esbuild browser-test.manual.js --bundle | pbcopy
 import isOnline from './browser.js';
 
-console.log('is online:', await isOnline());
+// eslint-disable-next-line unicorn/prefer-top-level-await
+(async () => {
+	console.log('is online:', await isOnline());
+})();

@@ -127,7 +127,6 @@ The following checks are run in parallel:
 
 **Browser:**
 - Retrieve [icanhazip.com](https://github.com/major/icanhaz) (or [ipify.org](https://www.ipify.org) as fallback) via HTTPS.
-- Check Cloudflare's 1.1.1.1 service via HTTPS (helps when ad blockers block icanhazip.com).
 
 When any check succeeds, the returned Promise is resolved to `true`.
 

@@ -70,13 +70,10 @@ export default async function isOnline(options = {}) {
 
 	const publicIpFunction = options.ipVersion === 4 ? publicIpv4 : publicIpv6;
 
-	// Run multiple checks in parallel for better resilience
+	// Run checks in parallel for better resilience
 	const checks = [
 		// Main check using public-ip (which includes icanhazip and ipify fallback)
 		publicIpFunction({...options, signal: options.signal}),
-		// Additional check using Cloudflare (CORS-enabled)
-		// This helps when Brave blocks icanhazip (works for both IPv4 and IPv6)
-		urlCheck('https://1.1.1.1/', options, options.signal),
 	];
 
 	// Add any user-provided fallback URLs to parallel checks
