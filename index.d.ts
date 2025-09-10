@@ -8,6 +8,23 @@ export type Options = {
 
 	/**
 	AbortSignal to cancel the operation.
+
+	When aborted, the promise will resolve to `false`.
+
+	@example
+	```
+	import isOnline from 'is-online';
+
+	const controller = new AbortController();
+
+	setTimeout(() => {
+		controller.abort();
+	}, 500);
+
+	const result = await isOnline({signal: controller.signal});
+	console.log(result);
+	//=> false
+	```
 	*/
 	readonly signal?: AbortSignal;
 
@@ -31,11 +48,26 @@ The following checks are run in parallel:
 
 When any check succeeds, the returned Promise is resolved to `true`.
 
+@returns A promise that resolves to `true` if the internet connection is up, `false` otherwise.
+
 @example
 ```
 import isOnline from 'is-online';
 
 console.log(await isOnline());
+//=> true
+```
+
+@example
+```
+import isOnline from 'is-online';
+
+// With timeout
+console.log(await isOnline({timeout: 10_000}));
+//=> true
+
+// With IPv6
+console.log(await isOnline({ipVersion: 6}));
 //=> true
 ```
 */

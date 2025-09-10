@@ -1,5 +1,5 @@
 // Need to test manually in DevTools
-// $ npx browserify test-browser.js | pbcopy
+// $ npx browserify browser-test.js | pbcopy
 import isOnline from './browser.js';
 
 console.log('is online:', await isOnline());

@@ -5,7 +5,6 @@ import pAny from 'p-any';
 import pTimeout from 'p-timeout';
 
 const appleCheck = async (options, signal) => {
-	// eslint-disable-next-line n/no-unsupported-features/node-builtins
 	const fetchWithTimeout = withHttpError(withTimeout(globalThis.fetch, options.timeout));
 
 	const response = await fetchWithTimeout('https://captive.apple.com/hotspot-detect.html', {

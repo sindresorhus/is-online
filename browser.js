@@ -8,7 +8,6 @@ export default async function isOnline(options = {}) {
 		...options,
 	};
 
-	// eslint-disable-next-line n/no-unsupported-features/node-builtins
 	if (!navigator?.onLine) {
 		return false;
 	}

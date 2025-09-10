@@ -12,6 +12,11 @@ In the browser, there is already [`navigator.onLine`](https://developer.mozilla.
 npm install is-online
 ```
 
+## Requirements
+
+- Node.js 20+
+- Works in modern browsers when bundled (requires `fetch` API support)
+
 ## Usage
 
 ```js
@@ -21,9 +26,40 @@ console.log(await isOnline());
 //=> true
 ```
 
+### With timeout
+
+```js
+import isOnline from 'is-online';
+
+console.log(await isOnline({timeout: 10_000}));
+//=> true
+```
+
+### With abort signal
+
+```js
+import isOnline from 'is-online';
+
+const controller = new AbortController();
+
+setTimeout(() => {
+	controller.abort();
+}, 500);
+
+const result = await isOnline({
+	timeout: 3000,
+	signal: controller.signal
+});
+
+console.log(result);
+//=> false
+```
+
 ## API
 
 ### isOnline(options?)
+
+Returns a `Promise<boolean>` that resolves to `true` if the internet connection is up, `false` otherwise.
 
 #### options
 
@@ -40,7 +76,9 @@ Milliseconds to wait for a server to respond.
 
 Type: `AbortSignal`
 
-Signal to abort the operation.
+An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) to abort the operation.
+
+When the signal is aborted, the promise will resolve to `false`.
 
 ##### ipVersion
 

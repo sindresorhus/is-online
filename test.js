@@ -1,69 +1,70 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
 import process from 'node:process';
-import test from 'ava';
 import isOnline from './index.js';
 
-test('v4', async t => {
-	t.true(await isOnline());
+test('v4', async () => {
+	assert.equal(await isOnline(), true);
 });
 
-test('v4 with timeout', async t => {
-	t.true(await isOnline({timeout: 10_000}));
+test('v4 with timeout', async () => {
+	assert.equal(await isOnline({timeout: 10_000}), true);
 });
 
-test('v4 with impossible timeout', async t => {
-	t.false(await isOnline({timeout: 1}));
+test('v4 with impossible timeout', async () => {
+	assert.equal(await isOnline({timeout: 1}), false);
 });
 
-test('v4 with abort signal', async t => {
+test('v4 with abort signal', async () => {
 	const controller = new AbortController();
 	const promise = isOnline({signal: controller.signal});
 	controller.abort();
-	t.false(await promise);
+	assert.equal(await promise, false);
 });
 
-test('v4 with pre-aborted signal', async t => {
+test('v4 with pre-aborted signal', async () => {
 	const controller = new AbortController();
 	controller.abort();
-	t.false(await isOnline({signal: controller.signal}));
+	assert.equal(await isOnline({signal: controller.signal}), false);
 });
 
-test('v4 with abort signal after delay', async t => {
+test('v4 with abort signal after delay', async () => {
 	const controller = new AbortController();
 	const promise = isOnline({signal: controller.signal, timeout: 5000});
-	setTimeout(() => controller.abort(), 100);
-	t.false(await promise);
+	setImmediate(() => controller.abort());
+	assert.equal(await promise, false);
 });
 
-test('invalid ipVersion throws error', async t => {
-	await t.throwsAsync(isOnline({ipVersion: 5}), {message: '`ipVersion` must be 4 or 6'});
+test('invalid ipVersion throws error', async () => {
+	await assert.rejects(isOnline({ipVersion: 5}), {message: '`ipVersion` must be 4 or 6'});
 });
 
 if (!process.env.CI) {
-	test('v6', async t => {
-		t.true(await isOnline({ipVersion: 6}));
+	test('v6', async () => {
+		assert.equal(await isOnline({ipVersion: 6}), true);
 	});
 
-	test('v6 with timeout', async t => {
-		t.true(await isOnline({ipVersion: 6, timeout: 10_000}));
+	test('v6 with timeout', async () => {
+		assert.equal(await isOnline({ipVersion: 6, timeout: 10_000}), true);
 	});
 
-	test('v6 with abort signal', async t => {
+	test('v6 with abort signal', async () => {
 		const controller = new AbortController();
 		const promise = isOnline({ipVersion: 6, signal: controller.signal});
 		controller.abort();
-		t.false(await promise);
+		assert.equal(await promise, false);
 	});
 
-	test('v6 with pre-aborted signal', async t => {
+	test('v6 with pre-aborted signal', async () => {
 		const controller = new AbortController();
 		controller.abort();
-		t.false(await isOnline({ipVersion: 6, signal: controller.signal}));
+		assert.equal(await isOnline({ipVersion: 6, signal: controller.signal}), false);
 	});
 
-	test('v6 with abort signal after delay', async t => {
+	test('v6 with abort signal after delay', async () => {
 		const controller = new AbortController();
 		const promise = isOnline({ipVersion: 6, signal: controller.signal, timeout: 5000});
-		setTimeout(() => controller.abort(), 100);
-		t.false(await promise);
+		setImmediate(() => controller.abort());
+		assert.equal(await promise, false);
 	});
 }
