@@ -70,23 +70,23 @@ export default async function isOnline(options = {}) {
 
 	const publicIpFunction = options.ipVersion === 4 ? publicIpv4 : publicIpv6;
 
-	// Run checks in parallel for better resilience
-	const checks = [
-		// Main check using public-ip (which includes icanhazip and ipify fallback)
-		publicIpFunction({...options, signal: options.signal}),
-	];
-
-	// Add any user-provided fallback URLs to parallel checks
-	if (options.fallbackUrls?.length > 0) {
-		checks.push(checkUrls(options.fallbackUrls, options, options.signal));
-	}
-
 	try {
-		// Use Promise.any to return true if ANY check succeeds
-		await Promise.any(checks);
+		// Main check using public-ip (which includes icanhazip and ipify fallback)
+		await publicIpFunction({...options, signal: options.signal});
 		return true;
 	} catch {
-		// All checks failed
+		// Main check failed, try fallback URLs if provided
+		if (options.fallbackUrls?.length > 0) {
+			try {
+				await checkUrls(options.fallbackUrls, options, options.signal);
+				return true;
+			} catch {
+				// All fallback URLs also failed
+				return false;
+			}
+		}
+
+		// No fallback URLs provided, main check failed
 		return false;
 	}
 }
