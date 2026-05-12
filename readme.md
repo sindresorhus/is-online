@@ -167,3 +167,4 @@ To make it work through proxies, you need to set up [`global-agent`](https://git
 
 - [is-online-cli](https://github.com/sindresorhus/is-online-cli) - CLI for this module
 - [is-reachable](https://github.com/sindresorhus/is-reachable) - Check if servers are reachable
+# test
